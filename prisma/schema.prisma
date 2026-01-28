@@ -1,0 +1,51 @@
+// ============================================================================
+// Caltech MSC Website - Database Schema
+// ============================================================================
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// Member System
+// ============================================================================
+
+model Member {
+    id    String  @id @default(cuid())
+    name  String
+    email String? @unique
+
+    // Profile
+    photo     String?
+    website   String?
+    position  String?
+    education String?
+    bio       String?
+    orcid     String?
+
+    // Classification
+    category   MemberCategory @relation(fields: [categoryId], references: [id])
+    categoryId String
+    startDate  DateTime
+    endDate    DateTime?
+
+    // Management
+    order    Int     @default(0)
+    isHidden Boolean @default(false)
+
+    // Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    publications  MemberPublication[]
+    researchAreas MemberResearchArea[]
+
+    @@index([categoryId])
+    @@index([order])
+}
