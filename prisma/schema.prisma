@@ -162,3 +162,24 @@ model Collaborator {
 
     @@index([order])
 }
+
+// ============================================================================
+// Group Photo System
+// ============================================================================
+
+model GroupPhoto {
+    id       String   @id @default(cuid())
+    date     DateTime
+    imageUrl String
+    caption  String?
+
+    // Management
+    order Int @default(0)
+
+    // Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([date])
+    @@index([order])
+}
