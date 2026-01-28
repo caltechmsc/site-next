@@ -199,3 +199,37 @@ model Admin {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
+
+// ============================================================================
+// Junction Tables (Many-to-Many Relations)
+// ============================================================================
+
+model MemberPublication {
+    member         Member      @relation(fields: [memberId], references: [id], onDelete: Cascade)
+    memberId       String
+    publication    Publication @relation(fields: [publicationDoi], references: [doi], onDelete: Cascade)
+    publicationDoi String
+
+    @@id([memberId, publicationDoi])
+    @@index([publicationDoi])
+}
+
+model MemberResearchArea {
+    member         Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+    memberId       String
+    researchArea   ResearchArea @relation(fields: [researchAreaId], references: [id], onDelete: Cascade)
+    researchAreaId String
+
+    @@id([memberId, researchAreaId])
+    @@index([researchAreaId])
+}
+
+model PublicationResearchArea {
+    publication    Publication  @relation(fields: [publicationDoi], references: [doi], onDelete: Cascade)
+    publicationDoi String
+    researchArea   ResearchArea @relation(fields: [researchAreaId], references: [id], onDelete: Cascade)
+    researchAreaId String
+
+    @@id([publicationDoi, researchAreaId])
+    @@index([researchAreaId])
+}
