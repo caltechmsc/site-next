@@ -50,3 +50,19 @@ model Member {
     @@index([categoryId])
     @@index([order])
 }
+
+model MemberCategory {
+    id            String  @id @default(cuid())
+    name          String  @unique
+    order         Int     @default(0)
+    showByDefault Boolean @default(true)
+
+    // Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    members Member[]
+
+    @@index([order])
+}
