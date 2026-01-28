@@ -16,9 +16,10 @@ datasource db {
 // ============================================================================
 
 model Member {
-    id    String  @id @default(cuid())
-    name  String
-    email String? @unique
+    id      String  @id @default(cuid())
+    name    String
+    aliases String? // JSON array stored as string
+    email   String? @unique
 
     // Profile
     photo     String?
