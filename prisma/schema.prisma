@@ -66,3 +66,39 @@ model MemberCategory {
 
     @@index([order])
 }
+
+// ============================================================================
+// Publication System
+// ============================================================================
+
+model Publication {
+    doi String @id
+
+    // Basic Info
+    title    String
+    authors  String // JSON array stored as string
+    abstract String?
+    date     DateTime
+    journal  String?
+    volume   String?
+    issue    String?
+    pages    String?
+
+    // Metadata
+    topics    String? // JSON array stored as string
+    citations Int     @default(0)
+
+    // Sync
+    lastSyncedAt DateTime?
+
+    // Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    members       MemberPublication[]
+    researchAreas PublicationResearchArea[]
+
+    @@index([date])
+    @@index([citations])
+}
