@@ -102,3 +102,35 @@ model Publication {
     @@index([date])
     @@index([citations])
 }
+
+// ============================================================================
+// Research Area System
+// ============================================================================
+
+model ResearchArea {
+    id       String  @id @default(cuid())
+    slug     String  @unique
+    title    String
+    keywords String? // JSON array stored as string
+    content  String? // Markdown
+
+    // Hierarchy
+    parent   ResearchArea?  @relation("ResearchAreaHierarchy", fields: [parentId], references: [id])
+    parentId String?
+    children ResearchArea[] @relation("ResearchAreaHierarchy")
+
+    // Management
+    order    Int     @default(0)
+    isHidden Boolean @default(false)
+
+    // Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    members      MemberResearchArea[]
+    publications PublicationResearchArea[]
+
+    @@index([parentId])
+    @@index([order])
+}
