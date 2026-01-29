@@ -591,7 +591,9 @@ async function seedResearchAreas() {
   );
 
   // Second pass: create child areas (those with parent field)
-  const childAreas = RESEARCH_AREAS.filter((a) => a.parent);
+  const childAreas = RESEARCH_AREAS.filter(
+    (a): a is ResearchAreaSeed & { parent: string } => a.parent !== undefined
+  );
   const createdChildren = await Promise.all(
     childAreas.map((area) =>
       prisma.researchArea.create({
@@ -600,7 +602,7 @@ async function seedResearchAreas() {
           title: area.title,
           keywords: area.keywords,
           content: area.content,
-          parentId: area.parent ? parentIds[area.parent] : undefined,
+          parentId: parentIds[area.parent],
           order: area.order,
         },
       })
