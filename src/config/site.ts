@@ -98,8 +98,8 @@ export const features = {
 // ============================================================================
 
 export const seoDefaults = {
-  titleTemplate: "%s | Caltech MSC",
-  defaultTitle: "Caltech MSC - Materials and Process Simulation Center",
+  titleTemplate: `%s | ${siteConfig.name}`,
+  defaultTitle: `${siteConfig.name} - ${siteConfig.fullName}`,
   openGraph: {
     type: "website",
     locale: "en_US",
