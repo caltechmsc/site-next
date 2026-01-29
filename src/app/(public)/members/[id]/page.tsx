@@ -20,6 +20,13 @@ import {
   getAllMemberIds,
 } from "@/lib/db/queries/members";
 import { createMemberMetadata, createNotFoundMetadata } from "@/lib/metadata";
+import {
+  getInitials,
+  formatTenure,
+  formatCompactNumber,
+  parseAuthors,
+  joinAuthors,
+} from "@/lib/format";
 import { PublicationTimeline } from "@/components/member";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -201,7 +208,7 @@ export default async function MemberDetailPage({ params }: PageProps) {
               <div className="flex items-center gap-2">
                 <Quote className="h-4 w-4 text-primary" />
                 <span className="text-2xl font-bold tabular-nums">
-                  {formatNumber(stats.totalCitations)}
+                  {formatCompactNumber(stats.totalCitations)}
                 </span>
                 <span className="text-muted-foreground">Citations</span>
               </div>
@@ -348,49 +355,6 @@ function PublicationItem({
 // ============================================================================
 // Utilities
 // ============================================================================
-
-function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
-
-function formatTenure(startDate: Date, endDate: Date | null): string {
-  const startYear = new Date(startDate).getFullYear();
-  if (!endDate) {
-    return `${startYear} - Present`;
-  }
-  const endYear = new Date(endDate).getFullYear();
-  return startYear === endYear ? `${startYear}` : `${startYear} - ${endYear}`;
-}
-
-function formatNumber(num: number): string {
-  if (num >= 1000000) {
-    return `${(num / 1000000).toFixed(1)}M`;
-  }
-  if (num >= 1000) {
-    return `${(num / 1000).toFixed(1)}K`;
-  }
-  return num.toString();
-}
-
-function parseAuthors(authorsJson: string): string[] {
-  try {
-    return JSON.parse(authorsJson);
-  } catch {
-    return [authorsJson];
-  }
-}
-
-function joinAuthors(authors: string[]): string {
-  if (authors.length > 5) {
-    return `${authors.slice(0, 5).join(", ")}, et al.`;
-  }
-  return authors.join(", ");
-}
 
 function groupPublicationsByYear(
   publications: Awaited<ReturnType<typeof getMemberPublications>>
