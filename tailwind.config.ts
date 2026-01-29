@@ -34,7 +34,6 @@ const config = {
         },
         "msc-red": {
           DEFAULT: "hsl(var(--msc-red))",
-          dark: "hsl(var(--msc-red))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
