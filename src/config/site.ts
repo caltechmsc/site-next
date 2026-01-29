@@ -37,3 +37,46 @@ export const siteConfig = {
   // Google Calendar embed URL (for events page)
   calendarUrl: "",
 } as const;
+
+// ============================================================================
+// Navigation
+// ============================================================================
+
+export type NavItem = {
+  title: string;
+  href: string;
+  children?: NavItem[];
+};
+
+export const mainNav: NavItem[] = [
+  {
+    title: "About",
+    href: "/about",
+    children: [
+      { title: "Prof. Goddard", href: "/about/wag" },
+      { title: "MSC Center", href: "/about/msc" },
+    ],
+  },
+  { title: "Research", href: "/research" },
+  { title: "Publications", href: "/publications" },
+  { title: "Members", href: "/members" },
+  { title: "Collaborators", href: "/collaborators" },
+  {
+    title: "Events",
+    href: "/events",
+    children: [
+      { title: "Group Photos", href: "/events/photos" },
+      { title: "Calendar", href: "/events/calendar" },
+    ],
+  },
+] as const;
+
+export const adminNav: NavItem[] = [
+  { title: "Dashboard", href: "/admin" },
+  { title: "Publications", href: "/admin/publications" },
+  { title: "Members", href: "/admin/members" },
+  { title: "Research", href: "/admin/research" },
+  { title: "Collaborators", href: "/admin/collaborators" },
+  { title: "Photos", href: "/admin/photos" },
+  { title: "Settings", href: "/admin/settings" },
+] as const;
