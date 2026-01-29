@@ -92,3 +92,20 @@ export const features = {
   /** Items per page for paginated lists */
   itemsPerPage: 20,
 } as const;
+
+// ============================================================================
+// SEO Defaults
+// ============================================================================
+
+export const seoDefaults = {
+  titleTemplate: "%s | Caltech MSC",
+  defaultTitle: "Caltech MSC - Materials and Process Simulation Center",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: siteConfig.name,
+  },
+  twitter: {
+    cardType: "summary_large_image",
+  },
+} as const;
