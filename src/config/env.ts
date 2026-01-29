@@ -24,8 +24,9 @@ const envSchema = z.object({
   OPENALEX_API_KEY: z.string().optional(),
 
   // Authentication (optional, for admin panel)
+  // Note: These are validated at runtime by NextAuth, not here
   NEXTAUTH_SECRET: z.string().optional(),
-  NEXTAUTH_URL: z.string().url().optional(),
+  NEXTAUTH_URL: z.string().optional(),
 });
 
 // ============================================================================
