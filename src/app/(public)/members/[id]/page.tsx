@@ -297,11 +297,7 @@ export default async function MemberDetailPage({ params }: PageProps) {
                   {/* Publication List */}
                   <div className="space-y-3">
                     {pubs.map((pub) => (
-                      <PublicationItem
-                        key={pub.doi}
-                        publication={pub}
-                        currentMemberId={member.id}
-                      />
+                      <PublicationItem key={pub.doi} publication={pub} />
                     ))}
                   </div>
                 </div>
@@ -319,13 +315,9 @@ export default async function MemberDetailPage({ params }: PageProps) {
 
 interface PublicationItemProps {
   publication: Awaited<ReturnType<typeof getMemberPublications>>[number];
-  currentMemberId: string;
 }
 
-function PublicationItem({
-  publication,
-  currentMemberId,
-}: PublicationItemProps) {
+function PublicationItem({ publication }: PublicationItemProps) {
   const authors = parseAuthors(publication.authors);
 
   return (
