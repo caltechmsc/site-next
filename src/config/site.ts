@@ -80,3 +80,15 @@ export const adminNav: NavItem[] = [
   { title: "Photos", href: "/admin/photos" },
   { title: "Settings", href: "/admin/settings" },
 ] as const;
+
+// ============================================================================
+// Feature Flags
+// ============================================================================
+
+export const features = {
+  /** Enable dark mode toggle */
+  darkMode: true,
+
+  /** Items per page for paginated lists */
+  itemsPerPage: 20,
+} as const;
