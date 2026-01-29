@@ -19,34 +19,49 @@ export const revalidate = 300;
 // ============================================================================
 
 async function getStats() {
-  const [publicationCount, memberCount, researchAreaCount, totalCitations] =
-    await Promise.all([
-      prisma.publication.count(),
-      prisma.member.count({ where: { isHidden: false } }),
-      prisma.researchArea.count({ where: { isHidden: false } }),
-      prisma.publication.aggregate({ _sum: { citations: true } }),
-    ]);
+  try {
+    const [publicationCount, memberCount, researchAreaCount, totalCitations] =
+      await Promise.all([
+        prisma.publication.count(),
+        prisma.member.count({ where: { isHidden: false } }),
+        prisma.researchArea.count({ where: { isHidden: false } }),
+        prisma.publication.aggregate({ _sum: { citations: true } }),
+      ]);
 
-  return {
-    publications: publicationCount,
-    members: memberCount,
-    researchAreas: researchAreaCount,
-    citations: totalCitations._sum.citations ?? 0,
-  };
+    return {
+      publications: publicationCount,
+      members: memberCount,
+      researchAreas: researchAreaCount,
+      citations: totalCitations._sum.citations ?? 0,
+    };
+  } catch (error) {
+    console.error("Failed to fetch stats:", error);
+    return {
+      publications: 0,
+      members: 0,
+      researchAreas: 0,
+      citations: 0,
+    };
+  }
 }
 
 async function getRecentPublications() {
-  return prisma.publication.findMany({
-    orderBy: { date: "desc" },
-    take: 5,
-    select: {
-      doi: true,
-      title: true,
-      authors: true,
-      date: true,
-      journal: true,
-    },
-  });
+  try {
+    return await prisma.publication.findMany({
+      orderBy: { date: "desc" },
+      take: 5,
+      select: {
+        doi: true,
+        title: true,
+        authors: true,
+        date: true,
+        journal: true,
+      },
+    });
+  } catch (error) {
+    console.error("Failed to fetch recent publications:", error);
+    return [];
+  }
 }
 
 // ============================================================================
