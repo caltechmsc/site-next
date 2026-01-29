@@ -11,6 +11,79 @@ import { hash } from "crypto";
 const prisma = new PrismaClient();
 
 // ============================================================================
+// Type Definitions for Seed Data
+// ============================================================================
+
+interface MemberCategorySeed {
+  name: string;
+  order: number;
+  showByDefault: boolean;
+}
+
+interface MemberSeed {
+  name: string;
+  aliases: string; // JSON string
+  email: string;
+  position: string;
+  education: string;
+  bio: string;
+  category: string;
+  startDate: Date;
+  website?: string;
+  orcid?: string;
+  endDate?: Date;
+}
+
+interface ResearchAreaSeed {
+  slug: string;
+  title: string;
+  keywords: string; // JSON string
+  content: string;
+  order: number;
+  parent?: string; // Parent slug for child areas
+}
+
+interface PublicationSeed {
+  doi: string;
+  title: string;
+  authors: string; // JSON string
+  abstract: string;
+  date: Date;
+  journal: string;
+  volume: string;
+  issue: string;
+  pages: string;
+  citations: number;
+  areas: string[]; // Research area slugs
+  memberNames: string[]; // Member names for linking
+}
+
+interface CollaboratorSeed {
+  organization: string;
+  leader: string;
+  email: string;
+  website: string;
+  country: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  order: number;
+}
+
+interface GroupPhotoSeed {
+  date: Date;
+  caption: string;
+  order: number;
+}
+
+interface AdminSeed {
+  email: string;
+  name: string;
+  password: string;
+  role: string;
+}
+
+// ============================================================================
 // Utilities
 // ============================================================================
 
@@ -32,14 +105,14 @@ const json = (arr: string[]) => JSON.stringify(arr);
 // Seed Data Definitions
 // ============================================================================
 
-const CATEGORIES = [
+const CATEGORIES: MemberCategorySeed[] = [
   { name: "Faculty", order: 100, showByDefault: true },
   { name: "Postdoc", order: 200, showByDefault: true },
   { name: "Graduate Student", order: 300, showByDefault: true },
   { name: "Undergraduate Student", order: 400, showByDefault: false },
-] as const;
+];
 
-const MEMBERS = [
+const MEMBERS: MemberSeed[] = [
   {
     name: "William A. Goddard III",
     aliases: json(["W.A. Goddard", "Bill Goddard", "Goddard III"]),
@@ -104,9 +177,9 @@ const MEMBERS = [
     startDate: new Date("2015-09-01"),
     endDate: new Date("2020-06-15"),
   },
-] as const;
+];
 
-const RESEARCH_AREAS = [
+const RESEARCH_AREAS: ResearchAreaSeed[] = [
   // Parent areas
   {
     slug: "methods",
@@ -187,9 +260,9 @@ Research on materials for energy storage and conversion, including batteries and
     parent: "applications",
     order: 220,
   },
-] as const;
+];
 
-const PUBLICATIONS = [
+const PUBLICATIONS: PublicationSeed[] = [
   {
     doi: "10.1021/acs.jpclett.5b00001",
     title: "Grand Canonical Electronic DFT for Electrochemical Interfaces",
@@ -370,9 +443,9 @@ const PUBLICATIONS = [
     areas: ["quantum-mechanics", "catalysis"],
     memberNames: ["John Smith", "William A. Goddard III"],
   },
-] as const;
+];
 
-const COLLABORATORS = [
+const COLLABORATORS: CollaboratorSeed[] = [
   {
     organization: "Stanford University",
     leader: "Prof. Jennifer Martinez",
@@ -417,9 +490,9 @@ const COLLABORATORS = [
     longitude: 116.4074,
     order: 400,
   },
-] as const;
+];
 
-const GROUP_PHOTOS = [
+const GROUP_PHOTOS: GroupPhotoSeed[] = [
   {
     date: new Date("2025-01-10"),
     caption: "MSC Group Photo - New Year 2025",
@@ -435,14 +508,14 @@ const GROUP_PHOTOS = [
     caption: "MSC Holiday Party 2023",
     order: 300,
   },
-] as const;
+];
 
-const DEFAULT_ADMIN = {
+const DEFAULT_ADMIN: AdminSeed = {
   email: "admin@msc.caltech.edu",
   name: "Admin",
   password: "admin", // Will be hashed
   role: "admin",
-} as const;
+};
 
 // ============================================================================
 // Seed Functions
@@ -497,8 +570,8 @@ async function seedMembers(categoryIds: Record<string, string>) {
 async function seedResearchAreas() {
   console.log("🔬 Seeding research areas...");
 
-  // First pass: create parent areas
-  const parentAreas = RESEARCH_AREAS.filter((a) => !("parent" in a));
+  // First pass: create parent areas (those without parent field)
+  const parentAreas = RESEARCH_AREAS.filter((a) => !a.parent);
   const createdParents = await Promise.all(
     parentAreas.map((area) =>
       prisma.researchArea.create({
@@ -517,10 +590,9 @@ async function seedResearchAreas() {
     createdParents.map((p) => [p.slug, p.id])
   );
 
-  // Second pass: create child areas
+  // Second pass: create child areas (those with parent field)
   const childAreas = RESEARCH_AREAS.filter(
-    (a): a is (typeof RESEARCH_AREAS)[number] & { parent: string } =>
-      "parent" in a
+    (a): a is ResearchAreaSeed & { parent: string } => a.parent !== undefined
   );
   const createdChildren = await Promise.all(
     childAreas.map((area) =>
