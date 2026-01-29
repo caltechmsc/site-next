@@ -13,16 +13,30 @@ import type {
 } from "@/types";
 
 // ============================================================================
+// Types
+// ============================================================================
+
+export interface CategoryWithMembers {
+  id: string;
+  name: string;
+  order: number;
+  showByDefault: boolean;
+  members: MemberWithCategory[];
+}
+
+// ============================================================================
 // List Queries
 // ============================================================================
 
 /**
- * Get all visible members grouped by category.
- * Returns members sorted by category order, then member order.
+ * Get all categories with their members.
+ * Categories sorted by order, members sorted by order within each category.
+ * Only returns categories that have visible members.
  */
-export async function getMembersGroupedByCategory() {
+export async function getCategoriesWithMembers(): Promise<
+  CategoryWithMembers[]
+> {
   const categories = await prisma.memberCategory.findMany({
-    where: { showByDefault: true },
     orderBy: { order: "asc" },
     include: {
       members: {
@@ -35,7 +49,8 @@ export async function getMembersGroupedByCategory() {
     },
   });
 
-  return categories;
+  // Filter out empty categories
+  return categories.filter((cat) => cat.members.length > 0);
 }
 
 /**
@@ -48,24 +63,6 @@ export async function getAllMembers(): Promise<MemberWithCategory[]> {
     orderBy: [{ category: { order: "asc" } }, { order: "asc" }],
     include: {
       category: true,
-    },
-  });
-}
-
-/**
- * Get all member categories with member counts.
- */
-export async function getMemberCategories() {
-  return prisma.memberCategory.findMany({
-    orderBy: { order: "asc" },
-    include: {
-      _count: {
-        select: {
-          members: {
-            where: { isHidden: false },
-          },
-        },
-      },
     },
   });
 }
