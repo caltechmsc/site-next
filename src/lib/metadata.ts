@@ -6,6 +6,7 @@
 
 import type { Metadata } from "next";
 import { siteConfig, seoDefaults } from "@/config/site";
+import { truncateAtWordBoundary } from "@/lib/format";
 
 // ============================================================================
 // Page Metadata Builders
@@ -73,9 +74,9 @@ export function createMemberMetadata(member: {
   photo?: string | null;
 }): Metadata {
   const title = member.name;
-  const description =
-    member.bio?.slice(0, 160) ||
-    `${member.name}${member.position ? ` - ${member.position}` : ""} at ${siteConfig.fullName}, Caltech.`;
+  const description = member.bio
+    ? truncateAtWordBoundary(member.bio, 160)
+    : `${member.name}${member.position ? ` - ${member.position}` : ""} at ${siteConfig.fullName}, Caltech.`;
 
   return createPageMetadata({
     title,
