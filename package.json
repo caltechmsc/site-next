@@ -20,6 +20,7 @@
   "dependencies": {
     "@prisma/client": "^6.19.2",
     "@radix-ui/react-slot": "^1.1.1",
+    "autoprefixer": "^10.4.23",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.563.0",
@@ -28,7 +29,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^22.10.7",
