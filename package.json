@@ -10,15 +10,20 @@
     "format": "prettier --write .",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset",
     "postinstall": "prisma generate"
   },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  },
   "dependencies": {
-    "@prisma/client": "^6.2.0",
+    "@prisma/client": "^6.19.2",
     "@radix-ui/react-slot": "^1.1.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^0.473.0",
-    "next": "15.1.5",
+    "lucide-react": "^0.563.0",
+    "next": "15.5.11",
     "next-themes": "^0.4.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -30,12 +35,13 @@
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "eslint": "^9.18.0",
-    "eslint-config-next": "15.1.5",
+    "eslint-config-next": "15.5.11",
     "postcss": "^8.5.1",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "prisma": "^6.2.0",
-    "tailwindcss": "^3.4.17",
+    "prisma": "^6.19.2",
+    "tailwindcss": "^3.4.19",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.3"
   }
 }
