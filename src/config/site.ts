@@ -106,6 +106,6 @@ export const seoDefaults = {
     siteName: siteConfig.name,
   },
   twitter: {
-    cardType: "summary_large_image",
+    card: "summary_large_image",
   },
 } as const;
