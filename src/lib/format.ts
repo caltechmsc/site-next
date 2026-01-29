@@ -80,3 +80,31 @@ export function joinAuthors(authors: string[], maxDisplay: number = 5): string {
   }
   return authors.join(", ");
 }
+
+// ============================================================================
+// Text Truncation
+// ============================================================================
+
+/**
+ * Truncate text at word boundaries.
+ * Ensures text is cut at a space rather than mid-word.
+ */
+export function truncateAtWordBoundary(
+  text: string,
+  maxLength: number
+): string {
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  // Find last space before maxLength
+  const truncated = text.slice(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(" ");
+
+  // If no space found, just truncate at maxLength
+  if (lastSpace === -1) {
+    return truncated;
+  }
+
+  return truncated.slice(0, lastSpace);
+}
