@@ -9,6 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { MemberWithCategory } from "@/types";
 import { cn } from "@/lib/utils";
+import { getInitials, formatTenure } from "@/lib/format";
 
 // ============================================================================
 // Types
@@ -80,26 +81,4 @@ export function MemberCard({ member, className }: MemberCardProps) {
       </div>
     </Link>
   );
-}
-
-// ============================================================================
-// Utilities
-// ============================================================================
-
-function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
-
-function formatTenure(startDate: Date, endDate: Date | null): string {
-  const startYear = new Date(startDate).getFullYear();
-  if (!endDate) {
-    return `${startYear} - Present`;
-  }
-  const endYear = new Date(endDate).getFullYear();
-  return startYear === endYear ? `${startYear}` : `${startYear} - ${endYear}`;
 }
