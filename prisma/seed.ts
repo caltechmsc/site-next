@@ -96,7 +96,7 @@ const MEMBERS = [
     name: "Robert Wilson",
     aliases: json(["R. Wilson", "Bob Wilson"]),
     email: "rwilson@example.com",
-    position: "Former Graduate Student",
+    position: "Former Undergraduate Student",
     education: "Ph.D. Caltech, 2020",
     bio: "Now at Google Research.",
     website: "https://example.com/rwilson",
