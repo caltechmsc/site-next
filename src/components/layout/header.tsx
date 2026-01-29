@@ -30,10 +30,10 @@ export function Header() {
         {/* Logo / Site Name */}
         <Link href="/" className="flex items-center gap-2">
           <span className="text-lg font-semibold tracking-tight">
-            <span className="text-primary">MSC</span>
-            <span className="hidden text-muted-foreground sm:inline">
-              {" "}
-              @ Caltech
+            <span className="text-msc-red dark:text-msc-red">MSC</span>
+            <span className="hidden sm:inline">
+              <span className="text-muted-foreground"> @ </span>
+              <span className="text-primary">Caltech</span>
             </span>
           </span>
         </Link>
