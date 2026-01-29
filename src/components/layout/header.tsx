@@ -271,9 +271,9 @@ function MobileNavItem({
             )}
           />
         </button>
-        {expanded && (
+        {expanded && item.children && (
           <div className="mt-1">
-            {item.children!.map((child) => (
+            {item.children.map((child) => (
               <MobileNavItem
                 key={child.href}
                 item={child}
