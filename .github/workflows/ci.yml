@@ -4,6 +4,9 @@ on:
   - push
   - pull_request
 
+env:
+  DATABASE_URL: "file:./ci.db"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,6 +31,9 @@ jobs:
 
       - name: Type Check
         run: npx tsc --noEmit
+
+      - name: Setup Database
+        run: npm run db:push
 
       - name: Build
         run: npm run build
