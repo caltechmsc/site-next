@@ -11,7 +11,6 @@ import * as React from "react";
 import { Moon, Sun, Monitor } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
@@ -52,7 +51,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-  // Avoid hydration mismatch by only rendering after mount
+  // Avoid hydration mismatch by only rendering icon after mount
   React.useEffect(() => {
     setMounted(true);
   }, []);
@@ -66,11 +65,6 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     setTheme(THEME_CYCLE[nextIndex]);
   }, [theme, setTheme]);
 
-  // Show skeleton during SSR to prevent hydration mismatch
-  if (!mounted) {
-    return <Skeleton className={cn("h-9 w-9 rounded-md", className)} />;
-  }
-
   const currentTheme = (theme ?? "system") as keyof typeof THEME_ICONS;
   const Icon = THEME_ICONS[currentTheme];
   const label = THEME_LABELS[currentTheme];
@@ -81,10 +75,15 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       size="icon"
       onClick={cycleTheme}
       className={cn("h-9 w-9", className)}
-      aria-label={`Current theme: ${label}. Click to change.`}
-      title={label}
+      aria-label={
+        mounted ? `Current theme: ${label}. Click to change.` : "Toggle theme"
+      }
+      title={mounted ? label : undefined}
+      disabled={!mounted}
     >
-      <Icon className="h-4 w-4" />
+      {mounted && (
+        <Icon className="h-4 w-4 duration-200 animate-in fade-in-0" />
+      )}
     </Button>
   );
 }
