@@ -30,7 +30,7 @@ model Member {
     orcid     String?
 
     // Classification
-    category   MemberCategory @relation(fields: [categoryId], references: [id])
+    category   MemberCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
     categoryId String
     startDate  DateTime
     endDate    DateTime?
