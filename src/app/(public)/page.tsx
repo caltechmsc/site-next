@@ -4,6 +4,7 @@ import { ArrowRight, BookOpen, Users, FlaskConical, Quote } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/db/client";
+import { formatCompactNumber, parseAuthors } from "@/lib/format";
 
 // ============================================================================
 // Page Configuration
@@ -126,7 +127,7 @@ export default async function HomePage() {
             />
             <StatCard
               href="/publications"
-              value={formatNumber(stats.citations)}
+              value={formatCompactNumber(stats.citations)}
               label="Citations"
               icon={Quote}
             />
@@ -259,26 +260,4 @@ function QuickLinkCard({ href, title, description }: QuickLinkCardProps) {
       <p className="mt-1 text-sm text-muted-foreground">{description}</p>
     </Link>
   );
-}
-
-// ============================================================================
-// Utilities
-// ============================================================================
-
-function formatNumber(num: number): string {
-  if (num >= 1000000) {
-    return `${(num / 1000000).toFixed(1)}M`;
-  }
-  if (num >= 1000) {
-    return `${(num / 1000).toFixed(1)}K`;
-  }
-  return num.toString();
-}
-
-function parseAuthors(authorsJson: string): string[] {
-  try {
-    return JSON.parse(authorsJson);
-  } catch {
-    return [authorsJson];
-  }
 }
