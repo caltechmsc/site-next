@@ -115,7 +115,7 @@ model ResearchArea {
     content  String? // Markdown
 
     // Hierarchy
-    parent   ResearchArea?  @relation("ResearchAreaHierarchy", fields: [parentId], references: [id])
+    parent   ResearchArea?  @relation("ResearchAreaHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
     parentId String?
     children ResearchArea[] @relation("ResearchAreaHierarchy")
 
