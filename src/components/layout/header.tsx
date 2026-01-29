@@ -23,6 +23,12 @@ import {
 
 export function Header() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const pathname = usePathname();
+
+  // Auto-close mobile menu when pathname changes (e.g., browser back/forward)
+  React.useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
