@@ -7,7 +7,7 @@
 
 "use client";
 
-import { useState, useCallback, useTransition, useEffect } from "react";
+import { useState, useCallback, useTransition, useEffect, useRef } from "react";
 import { Search, X, Filter, ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -48,6 +48,12 @@ interface PublicationFiltersProps {
 }
 
 // ============================================================================
+// Constants
+// ============================================================================
+
+const SEARCH_DEBOUNCE_MS = 300;
+
+// ============================================================================
 // Component
 // ============================================================================
 
@@ -59,22 +65,46 @@ export function PublicationFilters({
   filteredCount,
   className,
 }: PublicationFiltersProps) {
+  // Local search input state (for debouncing)
   const [localSearch, setLocalSearch] = useState(filters.search);
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (localSearch !== filters.search) {
-        startTransition(() => {
-          onFiltersChange({ ...filters, search: localSearch });
-        });
-      }
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [localSearch, filters, onFiltersChange]);
+  // Track if we're currently syncing to prevent loops
+  const isSyncingRef = useRef(false);
 
+  // Sync localSearch when filters.search changes externally (e.g., clear all)
+  useEffect(() => {
+    if (filters.search !== localSearch && !isSyncingRef.current) {
+      setLocalSearch(filters.search);
+    }
+  }, [filters.search]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Debounced search: sync localSearch → filters.search
+  useEffect(() => {
+    // Skip if values already match
+    if (localSearch === filters.search) return;
+
+    const timer = setTimeout(() => {
+      isSyncingRef.current = true;
+      startTransition(() => {
+        onFiltersChange({ ...filters, search: localSearch });
+      });
+      // Reset sync flag after state update
+      requestAnimationFrame(() => {
+        isSyncingRef.current = false;
+      });
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => clearTimeout(timer);
+  }, [localSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Update a single filter field
   const updateFilter = useCallback(
     <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
+      // Special handling for search to sync localSearch
+      if (key === "search") {
+        setLocalSearch(value as string);
+      }
       startTransition(() => {
         onFiltersChange({ ...filters, [key]: value });
       });
@@ -82,6 +112,7 @@ export function PublicationFilters({
     [filters, onFiltersChange]
   );
 
+  // Clear all filters
   const clearFilters = useCallback(() => {
     setLocalSearch("");
     startTransition(() => {
@@ -93,6 +124,14 @@ export function PublicationFilters({
       });
     });
   }, [onFiltersChange]);
+
+  // Clear search input
+  const clearSearch = useCallback(() => {
+    setLocalSearch("");
+    startTransition(() => {
+      onFiltersChange({ ...filters, search: "" });
+    });
+  }, [filters, onFiltersChange]);
 
   const hasActiveFilters =
     filters.search || filters.year || filters.journal || filters.areaId;
@@ -113,7 +152,7 @@ export function PublicationFilters({
         />
         {localSearch && (
           <button
-            onClick={() => setLocalSearch("")}
+            onClick={clearSearch}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           >
             <X className="h-4 w-4" />
@@ -257,7 +296,7 @@ export function PublicationFilters({
           {filters.search && (
             <Badge variant="secondary" className="gap-1 text-xs font-normal">
               Search: &ldquo;{filters.search}&rdquo;
-              <button onClick={() => updateFilter("search", "")}>
+              <button onClick={clearSearch} aria-label="Clear search">
                 <X className="h-3 w-3" />
               </button>
             </Badge>
