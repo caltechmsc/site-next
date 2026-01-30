@@ -87,6 +87,25 @@ export function createMemberMetadata(member: {
 }
 
 /**
+ * Generate metadata for research area detail pages.
+ */
+export function createResearchAreaMetadata(area: {
+  slug: string;
+  title: string;
+  content?: string | null;
+}): Metadata {
+  const description = area.content
+    ? truncateAtWordBoundary(area.content.replace(/[#*`]/g, ""), 160)
+    : `Research on ${area.title} at ${siteConfig.fullName}, Caltech.`;
+
+  return createPageMetadata({
+    title: area.title,
+    description,
+    path: `/research/${area.slug}`,
+  });
+}
+
+/**
  * Generate metadata for not found pages.
  */
 export function createNotFoundMetadata(entityType: string = "Page"): Metadata {
