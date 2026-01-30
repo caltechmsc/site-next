@@ -180,7 +180,7 @@ const MEMBERS: MemberSeed[] = [
 ];
 
 const RESEARCH_AREAS: ResearchAreaSeed[] = [
-  // Parent areas
+  // Parent areas with children
   {
     slug: "methods",
     title: "A. Computational Methods",
@@ -194,6 +194,31 @@ const RESEARCH_AREAS: ResearchAreaSeed[] = [
     keywords: json(["applications", "materials"]),
     content: "Application of computational methods to real-world problems.",
     order: 200,
+  },
+  // Standalone area (no parent, no children)
+  {
+    slug: "machine-learning",
+    title: "C. Machine Learning for Materials",
+    keywords: json([
+      "ML",
+      "machine learning",
+      "neural network",
+      "AI",
+      "deep learning",
+    ]),
+    content: `# Machine Learning for Materials Science
+
+Developing and applying machine learning methods to accelerate materials discovery and simulation.
+
+## Research Focus
+
+- **Neural Network Potentials** - ML-based interatomic potentials for MD simulations
+- **Property Prediction** - Predicting material properties from structure
+- **Inverse Design** - ML-guided discovery of new materials
+- **Accelerated Sampling** - Enhanced sampling methods using ML
+
+This is a cross-cutting area that combines with our methods and applications research.`,
+    order: 300,
   },
   // Child areas
   {
@@ -397,6 +422,36 @@ const PUBLICATIONS: PublicationSeed[] = [
     citations: 34,
     areas: ["reaxff", "energy-materials"],
     memberNames: ["Jane Doe", "Maria Garcia", "William A. Goddard III"],
+  },
+  {
+    doi: "10.1038/s42256-024-00850-0",
+    title: "Neural Network Potentials for Reactive Molecular Dynamics",
+    authors: json(["A. Chen", "J. Smith", "W.A. Goddard III"]),
+    abstract:
+      "A unified framework combining graph neural networks with ReaxFF for accurate and efficient reactive simulations.",
+    date: new Date("2024-05-15"),
+    journal: "Nat. Mach. Intell.",
+    volume: "6",
+    issue: "5",
+    pages: "512-523",
+    citations: 45,
+    areas: ["machine-learning", "reaxff"],
+    memberNames: ["Alex Chen", "John Smith", "William A. Goddard III"],
+  },
+  {
+    doi: "10.1021/acs.jctc.3c01234",
+    title: "Deep Learning for Predicting Catalyst Activity",
+    authors: json(["M. Garcia", "A. Chen", "W.A. Goddard III"]),
+    abstract:
+      "Machine learning models trained on DFT data predict catalytic activity with chemical accuracy.",
+    date: new Date("2024-02-20"),
+    journal: "J. Chem. Theory Comput.",
+    volume: "20",
+    issue: "4",
+    pages: "1890-1902",
+    citations: 23,
+    areas: ["machine-learning", "catalysis"],
+    memberNames: ["Maria Garcia", "Alex Chen", "William A. Goddard III"],
   },
   {
     doi: "10.1038/s41929-022-00890-w",
