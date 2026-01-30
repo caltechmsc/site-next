@@ -236,7 +236,7 @@ export default async function MemberDetailPage({ params }: PageProps) {
               </div>
             )}
             {member.bio && (
-              <div className="prose prose-neutral dark:prose-invert max-w-none">
+              <div className="prose prose-neutral max-w-none dark:prose-invert">
                 <p>{member.bio}</p>
               </div>
             )}
