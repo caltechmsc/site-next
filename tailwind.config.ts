@@ -75,9 +75,131 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: "none",
+            color: "hsl(var(--foreground))",
+            "h1, h2, h3, h4, h5, h6": {
+              color: "hsl(var(--foreground))",
+              fontWeight: "600",
+            },
+            h1: {
+              fontSize: "2.25em",
+              marginTop: "0",
+              marginBottom: "0.8em",
+            },
+            h2: {
+              fontSize: "1.5em",
+              marginTop: "1.5em",
+              marginBottom: "0.75em",
+              borderBottomWidth: "1px",
+              borderBottomColor: "hsl(var(--border))",
+              paddingBottom: "0.3em",
+            },
+            h3: {
+              fontSize: "1.25em",
+              marginTop: "1.25em",
+              marginBottom: "0.5em",
+            },
+            p: {
+              marginTop: "0.75em",
+              marginBottom: "0.75em",
+            },
+            a: {
+              color: "hsl(var(--primary))",
+              textDecoration: "underline",
+              textUnderlineOffset: "2px",
+              "&:hover": {
+                color: "hsl(var(--primary) / 0.8)",
+              },
+            },
+            "ul, ol": {
+              paddingLeft: "1.5em",
+            },
+            li: {
+              marginTop: "0.25em",
+              marginBottom: "0.25em",
+            },
+            code: {
+              color: "hsl(var(--primary))",
+              backgroundColor: "hsl(var(--accent))",
+              padding: "0.125em 0.25em",
+              borderRadius: "0.25em",
+              fontSize: "0.875em",
+              fontWeight: "500",
+            },
+            "code::before": {
+              content: '""',
+            },
+            "code::after": {
+              content: '""',
+            },
+            pre: {
+              backgroundColor: "hsl(var(--accent))",
+              borderRadius: "0.5em",
+              padding: "1em",
+              overflowX: "auto",
+            },
+            "pre code": {
+              backgroundColor: "transparent",
+              padding: "0",
+              fontSize: "0.875em",
+            },
+            blockquote: {
+              borderLeftWidth: "4px",
+              borderLeftColor: "hsl(var(--primary))",
+              paddingLeft: "1em",
+              fontStyle: "italic",
+              color: "hsl(var(--muted-foreground))",
+            },
+            hr: {
+              borderColor: "hsl(var(--border))",
+              marginTop: "2em",
+              marginBottom: "2em",
+            },
+            strong: {
+              color: "hsl(var(--foreground))",
+              fontWeight: "600",
+            },
+            table: {
+              width: "100%",
+              borderCollapse: "collapse",
+            },
+            "th, td": {
+              padding: "0.5em 1em",
+              borderWidth: "1px",
+              borderColor: "hsl(var(--border))",
+            },
+            th: {
+              backgroundColor: "hsl(var(--accent))",
+              fontWeight: "600",
+            },
+          },
+        },
+        invert: {
+          css: {
+            "--tw-prose-body": "hsl(var(--foreground))",
+            "--tw-prose-headings": "hsl(var(--foreground))",
+            "--tw-prose-links": "hsl(var(--primary))",
+            "--tw-prose-bold": "hsl(var(--foreground))",
+            "--tw-prose-counters": "hsl(var(--muted-foreground))",
+            "--tw-prose-bullets": "hsl(var(--muted-foreground))",
+            "--tw-prose-hr": "hsl(var(--border))",
+            "--tw-prose-quotes": "hsl(var(--muted-foreground))",
+            "--tw-prose-quote-borders": "hsl(var(--primary))",
+            "--tw-prose-captions": "hsl(var(--muted-foreground))",
+            "--tw-prose-code": "hsl(var(--primary))",
+            "--tw-prose-pre-code": "hsl(var(--foreground))",
+            "--tw-prose-pre-bg": "hsl(var(--accent))",
+            "--tw-prose-th-borders": "hsl(var(--border))",
+            "--tw-prose-td-borders": "hsl(var(--border))",
+          },
+        },
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;
 
 export default config;

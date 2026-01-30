@@ -3,12 +3,12 @@
 // ============================================================================
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 // ============================================================================
@@ -16,55 +16,55 @@ datasource db {
 // ============================================================================
 
 model Member {
-    id      String  @id @default(cuid())
-    name    String
-    aliases String? // JSON array stored as string
-    email   String? @unique
+  id      String  @id @default(cuid())
+  name    String
+  aliases String? // JSON array stored as string
+  email   String? @unique
 
-    // Profile
-    photo     String?
-    website   String?
-    position  String?
-    education String?
-    bio       String?
-    orcid     String?
+  // Profile
+  photo     String?
+  website   String?
+  position  String?
+  education String?
+  bio       String?
+  orcid     String?
 
-    // Classification
-    category   MemberCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-    categoryId String
-    startDate  DateTime
-    endDate    DateTime?
+  // Classification
+  category   MemberCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  categoryId String
+  startDate  DateTime
+  endDate    DateTime?
 
-    // Management
-    order    Int     @default(0)
-    isHidden Boolean @default(false)
+  // Management
+  order    Int     @default(0)
+  isHidden Boolean @default(false)
 
-    // Timestamps
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    // Relations
-    publications  MemberPublication[]
-    researchAreas MemberResearchArea[]
+  // Relations
+  publications  MemberPublication[]
+  researchAreas MemberResearchArea[]
 
-    @@index([categoryId])
-    @@index([order])
+  @@index([categoryId])
+  @@index([order])
 }
 
 model MemberCategory {
-    id            String  @id @default(cuid())
-    name          String  @unique
-    order         Int     @default(0)
-    showByDefault Boolean @default(true)
+  id            String  @id @default(cuid())
+  name          String  @unique
+  order         Int     @default(0)
+  showByDefault Boolean @default(true)
 
-    // Timestamps
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    // Relations
-    members Member[]
+  // Relations
+  members Member[]
 
-    @@index([order])
+  @@index([order])
 }
 
 // ============================================================================
@@ -72,35 +72,35 @@ model MemberCategory {
 // ============================================================================
 
 model Publication {
-    doi String @id
+  doi String @id
 
-    // Basic Info
-    title    String
-    authors  String // JSON array stored as string
-    abstract String?
-    date     DateTime
-    journal  String?
-    volume   String?
-    issue    String?
-    pages    String?
+  // Basic Info
+  title    String
+  authors  String // JSON array stored as string
+  abstract String?
+  date     DateTime
+  journal  String?
+  volume   String?
+  issue    String?
+  pages    String?
 
-    // Metadata
-    topics    String? // JSON array stored as string
-    citations Int     @default(0)
+  // Metadata
+  topics    String? // JSON array stored as string
+  citations Int     @default(0)
 
-    // Sync
-    lastSyncedAt DateTime?
+  // Sync
+  lastSyncedAt DateTime?
 
-    // Timestamps
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    // Relations
-    members       MemberPublication[]
-    researchAreas PublicationResearchArea[]
+  // Relations
+  members       MemberPublication[]
+  researchAreas PublicationResearchArea[]
 
-    @@index([date])
-    @@index([citations])
+  @@index([date])
+  @@index([citations])
 }
 
 // ============================================================================
@@ -108,31 +108,31 @@ model Publication {
 // ============================================================================
 
 model ResearchArea {
-    id       String  @id @default(cuid())
-    slug     String  @unique
-    title    String
-    keywords String? // JSON array stored as string
-    content  String? // Markdown
+  id       String  @id @default(cuid())
+  slug     String  @unique
+  title    String
+  keywords String? // JSON array stored as string
+  content  String? // Markdown
 
-    // Hierarchy
-    parent   ResearchArea?  @relation("ResearchAreaHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
-    parentId String?
-    children ResearchArea[] @relation("ResearchAreaHierarchy")
+  // Hierarchy
+  parent   ResearchArea?  @relation("ResearchAreaHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  parentId String?
+  children ResearchArea[] @relation("ResearchAreaHierarchy")
 
-    // Management
-    order    Int     @default(0)
-    isHidden Boolean @default(false)
+  // Management
+  order    Int     @default(0)
+  isHidden Boolean @default(false)
 
-    // Timestamps
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    // Relations
-    members      MemberResearchArea[]
-    publications PublicationResearchArea[]
+  // Relations
+  members      MemberResearchArea[]
+  publications PublicationResearchArea[]
 
-    @@index([parentId])
-    @@index([order])
+  @@index([parentId])
+  @@index([order])
 }
 
 // ============================================================================
@@ -140,27 +140,27 @@ model ResearchArea {
 // ============================================================================
 
 model Collaborator {
-    id           String  @id @default(cuid())
-    organization String
-    leader       String?
-    email        String?
-    website      String?
+  id           String  @id @default(cuid())
+  organization String
+  leader       String?
+  email        String?
+  website      String?
 
-    // Location
-    country   String?
-    city      String?
-    latitude  Float?
-    longitude Float?
+  // Location
+  country   String?
+  city      String?
+  latitude  Float?
+  longitude Float?
 
-    // Management
-    order    Int     @default(0)
-    isHidden Boolean @default(false)
+  // Management
+  order    Int     @default(0)
+  isHidden Boolean @default(false)
 
-    // Timestamps
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    @@index([order])
+  @@index([order])
 }
 
 // ============================================================================
@@ -168,20 +168,20 @@ model Collaborator {
 // ============================================================================
 
 model GroupPhoto {
-    id       String   @id @default(cuid())
-    date     DateTime
-    imageUrl String
-    caption  String?
+  id       String   @id @default(cuid())
+  date     DateTime
+  imageUrl String
+  caption  String?
 
-    // Management
-    order Int @default(0)
+  // Management
+  order Int @default(0)
 
-    // Timestamps
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    @@index([date])
-    @@index([order])
+  @@index([date])
+  @@index([order])
 }
 
 // ============================================================================
@@ -189,15 +189,15 @@ model GroupPhoto {
 // ============================================================================
 
 model Admin {
-    id           String @id @default(cuid())
-    email        String @unique
-    name         String
-    passwordHash String
-    role         String @default("editor") // "admin" | "editor"
+  id           String @id @default(cuid())
+  email        String @unique
+  name         String
+  passwordHash String
+  role         String @default("editor") // "admin" | "editor"
 
-    // Timestamps
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ============================================================================
@@ -205,31 +205,31 @@ model Admin {
 // ============================================================================
 
 model MemberPublication {
-    member         Member      @relation(fields: [memberId], references: [id], onDelete: Cascade)
-    memberId       String
-    publication    Publication @relation(fields: [publicationDoi], references: [doi], onDelete: Cascade)
-    publicationDoi String
+  member         Member      @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId       String
+  publication    Publication @relation(fields: [publicationDoi], references: [doi], onDelete: Cascade)
+  publicationDoi String
 
-    @@id([memberId, publicationDoi])
-    @@index([publicationDoi])
+  @@id([memberId, publicationDoi])
+  @@index([publicationDoi])
 }
 
 model MemberResearchArea {
-    member         Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
-    memberId       String
-    researchArea   ResearchArea @relation(fields: [researchAreaId], references: [id], onDelete: Cascade)
-    researchAreaId String
+  member         Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId       String
+  researchArea   ResearchArea @relation(fields: [researchAreaId], references: [id], onDelete: Cascade)
+  researchAreaId String
 
-    @@id([memberId, researchAreaId])
-    @@index([researchAreaId])
+  @@id([memberId, researchAreaId])
+  @@index([researchAreaId])
 }
 
 model PublicationResearchArea {
-    publication    Publication  @relation(fields: [publicationDoi], references: [doi], onDelete: Cascade)
-    publicationDoi String
-    researchArea   ResearchArea @relation(fields: [researchAreaId], references: [id], onDelete: Cascade)
-    researchAreaId String
+  publication    Publication  @relation(fields: [publicationDoi], references: [doi], onDelete: Cascade)
+  publicationDoi String
+  researchArea   ResearchArea @relation(fields: [researchAreaId], references: [id], onDelete: Cascade)
+  researchAreaId String
 
-    @@id([publicationDoi, researchAreaId])
-    @@index([researchAreaId])
+  @@id([publicationDoi, researchAreaId])
+  @@index([researchAreaId])
 }

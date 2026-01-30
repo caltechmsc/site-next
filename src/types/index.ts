@@ -52,6 +52,42 @@ export type ResearchAreaWithRelations = ResearchArea & {
   };
 };
 
+/** Research area with nested children and aggregated stats */
+export type ResearchAreaWithHierarchy = ResearchArea & {
+  parent: Pick<ResearchArea, "id" | "slug" | "title"> | null;
+  children: ResearchAreaWithStats[];
+  stats: ResearchAreaStats;
+  members: { member: Pick<Member, "id" | "name" | "photo"> }[];
+};
+
+/** Research area with stats (for cards) */
+export type ResearchAreaWithStats = ResearchArea & {
+  stats: ResearchAreaStats;
+  members: { member: Pick<Member, "id" | "name" | "photo"> }[];
+};
+
+/** Aggregated statistics for a research area */
+export type ResearchAreaStats = {
+  publicationCount: number;
+  memberCount: number;
+  totalCitations: number;
+};
+
+/** Research area with full detail for detail page */
+export type ResearchAreaDetail = ResearchArea & {
+  parent: Pick<ResearchArea, "id" | "slug" | "title"> | null;
+  children: (ResearchArea & { stats: ResearchAreaStats })[];
+  members: {
+    member: Pick<Member, "id" | "name" | "photo" | "position">;
+  }[];
+  publications: {
+    publication: Publication & {
+      members: { member: Pick<Member, "id" | "name"> }[];
+    };
+  }[];
+  stats: ResearchAreaStats;
+};
+
 // ============================================================================
 // API Response Types
 // ============================================================================
