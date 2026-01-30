@@ -58,15 +58,13 @@ function ResearchAreaNode({ area }: ResearchAreaNodeProps) {
           {/* Connecting Line */}
           <div className="absolute -left-3 top-0 h-full w-px bg-border sm:-left-4" />
 
-          {area.children.map((child, index) => (
+          {area.children.map((child) => (
             <div key={child.id} className="relative">
               {/* Horizontal connector */}
               <div className="absolute -left-3 top-1/2 h-px w-3 bg-border sm:-left-4 sm:w-4" />
 
               {/* Dot at junction */}
-              {index === area.children.length - 1 && (
-                <div className="absolute -left-3 top-1/2 h-1.5 w-1.5 -translate-x-0.5 -translate-y-1/2 rounded-full bg-border sm:-left-4" />
-              )}
+              <div className="absolute -left-3 top-1/2 h-1.5 w-1.5 -translate-x-0.5 -translate-y-1/2 rounded-full bg-border sm:-left-4" />
 
               <ResearchCard
                 slug={child.slug}
