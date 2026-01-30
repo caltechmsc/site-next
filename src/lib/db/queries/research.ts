@@ -14,38 +14,72 @@ import type {
 } from "@/types";
 
 // ============================================================================
-// Stats Calculation
+// Batched Stats Calculation
 // ============================================================================
 
 /**
- * Calculate aggregated statistics for a research area.
+ * Calculate statistics for multiple research areas in a single batch.
  */
-async function calculateStats(
-  researchAreaId: string
-): Promise<ResearchAreaStats> {
-  const [publicationCount, memberCount, citations] = await Promise.all([
-    prisma.publicationResearchArea.count({
-      where: { researchAreaId },
+async function calculateStatsBatch(
+  areaIds: string[]
+): Promise<Map<string, ResearchAreaStats>> {
+  if (areaIds.length === 0) {
+    return new Map();
+  }
+
+  const [publicationCounts, memberCounts, citationRows] = await Promise.all([
+    prisma.publicationResearchArea.groupBy({
+      by: ["researchAreaId"],
+      where: { researchAreaId: { in: areaIds } },
+      _count: { _all: true },
     }),
-    prisma.memberResearchArea.count({
-      where: { researchAreaId },
+    prisma.memberResearchArea.groupBy({
+      by: ["researchAreaId"],
+      where: { researchAreaId: { in: areaIds } },
+      _count: { _all: true },
     }),
     prisma.publicationResearchArea.findMany({
-      where: { researchAreaId },
-      select: { publication: { select: { citations: true } } },
+      where: { researchAreaId: { in: areaIds } },
+      select: {
+        researchAreaId: true,
+        publication: { select: { citations: true } },
+      },
     }),
   ]);
 
-  const totalCitations = citations.reduce(
-    (sum, { publication }) => sum + publication.citations,
-    0
-  );
+  // Build maps for quick lookup
+  const pubCountByArea = new Map<string, number>();
+  for (const row of publicationCounts) {
+    pubCountByArea.set(row.researchAreaId, row._count._all);
+  }
 
-  return { publicationCount, memberCount, totalCitations };
+  const memberCountByArea = new Map<string, number>();
+  for (const row of memberCounts) {
+    memberCountByArea.set(row.researchAreaId, row._count._all);
+  }
+
+  const citationsByArea = new Map<string, number>();
+  for (const row of citationRows) {
+    const prev = citationsByArea.get(row.researchAreaId) ?? 0;
+    citationsByArea.set(row.researchAreaId, prev + row.publication.citations);
+  }
+
+  // Build result map
+  const result = new Map<string, ResearchAreaStats>();
+  for (const id of areaIds) {
+    result.set(id, {
+      publicationCount: pubCountByArea.get(id) ?? 0,
+      memberCount: memberCountByArea.get(id) ?? 0,
+      totalCitations: citationsByArea.get(id) ?? 0,
+    });
+  }
+
+  return result;
 }
 
 /**
- * Calculate aggregated stats including children.
+ * Calculate aggregated stats for a parent including all children.
+ * Uses publication DOIs for proper deduplication.
  */
 async function calculateStatsWithChildren(
   researchAreaId: string,
@@ -62,15 +96,21 @@ async function calculateStatsWithChildren(
     }),
     prisma.publicationResearchArea.findMany({
       where: { researchAreaId: { in: allIds } },
-      select: { publication: { select: { citations: true } } },
+      select: {
+        publicationDoi: true,
+        publication: { select: { citations: true } },
+      },
     }),
   ]);
 
-  // Deduplicate citations (a publication might be in parent and child)
-  const uniqueCitations = new Set(
-    citations.map((c) => c.publication.citations)
-  );
-  const totalCitations = Array.from(uniqueCitations).reduce(
+  // Deduplicate by publication DOI (a publication might be in parent and child)
+  const uniquePublications = new Map<string, number>();
+  for (const { publicationDoi, publication } of citations) {
+    if (!uniquePublications.has(publicationDoi)) {
+      uniquePublications.set(publicationDoi, publication.citations);
+    }
+  }
+  const totalCitations = Array.from(uniquePublications.values()).reduce(
     (sum, c) => sum + c,
     0
   );
@@ -115,6 +155,10 @@ export async function getResearchAreasHierarchy(): Promise<
     }
   }
 
+  // Batch calculate stats for all child areas
+  const allChildIds = allAreas.filter((a) => a.parentId).map((a) => a.id);
+  const childStatsBatch = await calculateStatsBatch(allChildIds);
+
   // Build hierarchy with stats
   const result: ResearchAreaWithHierarchy[] = [];
 
@@ -122,12 +166,16 @@ export async function getResearchAreasHierarchy(): Promise<
     const children = childrenMap.get(parent.id) || [];
     const childIds = children.map((c) => c.id);
 
-    // Calculate stats for each child
-    const childrenWithStats: ResearchAreaWithStats[] = await Promise.all(
-      children.map(async (child) => ({
+    // Assign pre-calculated stats to children
+    const childrenWithStats: ResearchAreaWithStats[] = children.map(
+      (child) => ({
         ...child,
-        stats: await calculateStats(child.id),
-      }))
+        stats: childStatsBatch.get(child.id) ?? {
+          publicationCount: 0,
+          memberCount: 0,
+          totalCitations: 0,
+        },
+      })
     );
 
     // Calculate aggregated stats for parent (including children)
@@ -139,8 +187,6 @@ export async function getResearchAreasHierarchy(): Promise<
       stats,
     });
   }
-
-  // Also include standalone areas (no parent, no children)
 
   return result;
 }
@@ -200,16 +246,27 @@ export async function getResearchAreaBySlug(
     return null;
   }
 
-  // Calculate stats for children
-  const childrenWithStats = await Promise.all(
-    area.children.map(async (child) => ({
-      ...child,
-      stats: await calculateStats(child.id),
-    }))
-  );
+  // Batch calculate stats for all children and own area
+  const childIds = area.children.map((c) => c.id);
+  const allIds = [area.id, ...childIds];
+  const statsBatch = await calculateStatsBatch(allIds);
 
-  // Calculate own stats
-  const stats = await calculateStats(area.id);
+  // Assign stats to children
+  const childrenWithStats = area.children.map((child) => ({
+    ...child,
+    stats: statsBatch.get(child.id) ?? {
+      publicationCount: 0,
+      memberCount: 0,
+      totalCitations: 0,
+    },
+  }));
+
+  // Get own stats from batch
+  const stats = statsBatch.get(area.id) ?? {
+    publicationCount: 0,
+    memberCount: 0,
+    totalCitations: 0,
+  };
 
   return {
     ...area,
