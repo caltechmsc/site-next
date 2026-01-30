@@ -140,10 +140,9 @@ export async function getPublicationStats(): Promise<PublicationStats> {
  */
 export async function getFilterOptions(): Promise<FilterOptions> {
   const [yearsResult, journalsResult, areasResult] = await Promise.all([
-    // Get distinct years
+    // Get all dates for year extraction
     prisma.publication.findMany({
       select: { date: true },
-      distinct: ["date"],
       orderBy: { date: "desc" },
     }),
     // Get distinct journals
