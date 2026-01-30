@@ -200,8 +200,15 @@ function formatBibTeX(data: CitationData): string {
  * "Last, F. M., Last, F. M., & Last, F. M."
  */
 function formatAuthorsAPA(authors: string[]): string {
+  if (authors.length === 0) {
+    return "Unknown";
+  }
+
   const formatted = authors.map((author) => {
-    const parts = author.trim().split(" ");
+    const parts = author
+      .trim()
+      .split(" ")
+      .filter((p) => p.length > 0);
     if (parts.length >= 2) {
       const lastName = parts[parts.length - 1];
       const initials = parts
@@ -210,7 +217,7 @@ function formatAuthorsAPA(authors: string[]): string {
         .join(" ");
       return `${lastName}, ${initials}`;
     }
-    return author;
+    return author || "Unknown";
   });
 
   if (formatted.length === 1) {
