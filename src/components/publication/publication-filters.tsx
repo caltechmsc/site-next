@@ -153,6 +153,7 @@ export function PublicationFilters({
         {localSearch && (
           <button
             onClick={clearSearch}
+            aria-label="Clear search"
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           >
             <X className="h-4 w-4" />
@@ -304,7 +305,10 @@ export function PublicationFilters({
           {filters.year && (
             <Badge variant="secondary" className="gap-1 text-xs font-normal">
               Year: {filters.year}
-              <button onClick={() => updateFilter("year", null)}>
+              <button
+                onClick={() => updateFilter("year", null)}
+                aria-label="Clear year filter"
+              >
                 <X className="h-3 w-3" />
               </button>
             </Badge>
@@ -312,7 +316,10 @@ export function PublicationFilters({
           {filters.journal && (
             <Badge variant="secondary" className="gap-1 text-xs font-normal">
               Journal: {filters.journal}
-              <button onClick={() => updateFilter("journal", null)}>
+              <button
+                onClick={() => updateFilter("journal", null)}
+                aria-label="Clear journal filter"
+              >
                 <X className="h-3 w-3" />
               </button>
             </Badge>
@@ -320,7 +327,10 @@ export function PublicationFilters({
           {activeArea && (
             <Badge variant="secondary" className="gap-1 text-xs font-normal">
               Area: {activeArea.title}
-              <button onClick={() => updateFilter("areaId", null)}>
+              <button
+                onClick={() => updateFilter("areaId", null)}
+                aria-label="Clear research area filter"
+              >
                 <X className="h-3 w-3" />
               </button>
             </Badge>
