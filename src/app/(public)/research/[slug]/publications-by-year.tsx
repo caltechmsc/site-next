@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { Quote, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 import type { Publication, Member } from "@/types";
-import { parseAuthors, joinAuthors } from "@/lib/format";
 import { Button } from "@/components/ui/button";
+import { PublicationCard } from "@/components/publication";
 
 // ============================================================================
 // Constants
@@ -86,7 +85,7 @@ export function PublicationsByYear({ publications }: PublicationsByYearProps) {
             {/* Publication List */}
             <div className="space-y-3">
               {visiblePubs.map(({ publication }) => (
-                <PublicationItem
+                <PublicationCard
                   key={publication.doi}
                   publication={publication}
                 />
@@ -139,43 +138,6 @@ export function PublicationsByYear({ publications }: PublicationsByYearProps) {
         </Button>
       )}
     </div>
-  );
-}
-
-// ============================================================================
-// Sub-components
-// ============================================================================
-
-interface PublicationItemProps {
-  publication: Publication & {
-    members: { member: Pick<Member, "id" | "name"> }[];
-  };
-}
-
-function PublicationItem({ publication }: PublicationItemProps) {
-  const authors = parseAuthors(publication.authors);
-
-  return (
-    <Link
-      href={`/publications/${encodeURIComponent(publication.doi)}`}
-      className="group block rounded-lg border bg-card p-4 transition-colors hover:border-primary/50 hover:bg-accent/50"
-    >
-      <p className="font-medium leading-snug group-hover:text-primary">
-        {publication.title}
-      </p>
-      <p className="mt-1.5 text-sm text-muted-foreground">
-        {joinAuthors(authors)}
-      </p>
-      <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-        {publication.journal && <span>{publication.journal}</span>}
-        {publication.citations > 0 && (
-          <span className="flex items-center gap-1">
-            <Quote className="h-3 w-3" />
-            {publication.citations} cited
-          </span>
-        )}
-      </div>
-    </Link>
   );
 }
 

@@ -42,6 +42,22 @@ export type PublicationWithMembers = Publication & {
   members: { member: Pick<Member, "id" | "name"> }[];
 };
 
+/** Publication for list display (with related members) */
+export type PublicationListItem = Publication & {
+  members: { member: Pick<Member, "id" | "name" | "photo"> }[];
+  researchAreas: {
+    researchArea: Pick<ResearchArea, "id" | "slug" | "title">;
+  }[];
+};
+
+/** Publication detail (full data) */
+export type PublicationDetail = Publication & {
+  members: { member: Pick<Member, "id" | "name" | "photo" | "position"> }[];
+  researchAreas: {
+    researchArea: Pick<ResearchArea, "id" | "slug" | "title">;
+  }[];
+};
+
 /** Research area with hierarchy and counts */
 export type ResearchAreaWithRelations = ResearchArea & {
   parent: ResearchArea | null;

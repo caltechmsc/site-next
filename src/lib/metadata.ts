@@ -106,6 +106,29 @@ export function createResearchAreaMetadata(area: {
 }
 
 /**
+ * Generate metadata for publication detail pages.
+ */
+export function createPublicationMetadata(publication: {
+  doi: string;
+  title: string;
+  authors: string;
+  abstract?: string | null;
+  journal?: string | null;
+  date: Date;
+}): Metadata {
+  const year = new Date(publication.date).getFullYear();
+  const description = publication.abstract
+    ? truncateAtWordBoundary(publication.abstract, 160)
+    : `${publication.title} (${year})${publication.journal ? ` - ${publication.journal}` : ""}`;
+
+  return createPageMetadata({
+    title: publication.title,
+    description,
+    path: `/publications/${encodeURIComponent(publication.doi)}`,
+  });
+}
+
+/**
  * Generate metadata for not found pages.
  */
 export function createNotFoundMetadata(entityType: string = "Page"): Metadata {

@@ -20,14 +20,9 @@ import {
   getAllMemberIds,
 } from "@/lib/db/queries/members";
 import { createMemberMetadata, createNotFoundMetadata } from "@/lib/metadata";
-import {
-  getInitials,
-  formatTenure,
-  formatCompactNumber,
-  parseAuthors,
-  joinAuthors,
-} from "@/lib/format";
+import { getInitials, formatTenure, formatCompactNumber } from "@/lib/format";
 import { PublicationTimeline } from "@/components/member";
+import { PublicationCard } from "@/components/publication";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -297,7 +292,7 @@ export default async function MemberDetailPage({ params }: PageProps) {
                   {/* Publication List */}
                   <div className="space-y-3">
                     {pubs.map((pub) => (
-                      <PublicationItem key={pub.doi} publication={pub} />
+                      <PublicationCard key={pub.doi} publication={pub} />
                     ))}
                   </div>
                 </div>
@@ -306,41 +301,6 @@ export default async function MemberDetailPage({ params }: PageProps) {
         </section>
       )}
     </div>
-  );
-}
-
-// ============================================================================
-// Sub-components
-// ============================================================================
-
-interface PublicationItemProps {
-  publication: Awaited<ReturnType<typeof getMemberPublications>>[number];
-}
-
-function PublicationItem({ publication }: PublicationItemProps) {
-  const authors = parseAuthors(publication.authors);
-
-  return (
-    <Link
-      href={`/publications/${encodeURIComponent(publication.doi)}`}
-      className="group block rounded-lg border bg-card p-4 transition-colors hover:border-primary/50 hover:bg-accent/50"
-    >
-      <p className="font-medium leading-snug group-hover:text-primary">
-        {publication.title}
-      </p>
-      <p className="mt-1.5 text-sm text-muted-foreground">
-        {joinAuthors(authors)}
-      </p>
-      <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-        {publication.journal && <span>{publication.journal}</span>}
-        {publication.citations > 0 && (
-          <span className="flex items-center gap-1">
-            <Quote className="h-3 w-3" />
-            {publication.citations} cited
-          </span>
-        )}
-      </div>
-    </Link>
   );
 }
 
