@@ -84,6 +84,11 @@ export async function getPhotoStats(): Promise<PhotoStats> {
     }),
   ]);
 
+  // Only compute year range if photos exist
+  if (totalPhotos === 0) {
+    return { totalPhotos: 0, yearRange: null };
+  }
+
   const minYear = dateRange._min.date?.getFullYear();
   const maxYear = dateRange._max.date?.getFullYear();
 
