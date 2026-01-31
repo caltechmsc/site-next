@@ -1,0 +1,56 @@
+/**
+ * Authentication Module
+ */
+
+// Session management (high-level API)
+export {
+  getCurrentUser,
+  loginWithPassword,
+  loginWithGoogle,
+  logout,
+  requireAuth,
+  hasRole,
+  type SessionUser,
+  type AuthResult,
+} from "./session";
+
+// JWT utilities
+export {
+  signAccessToken,
+  signRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+  generateTokenPair,
+  type AccessTokenPayload,
+  type RefreshTokenPayload,
+} from "./jwt";
+
+// Cookie management
+export {
+  setAuthCookies,
+  setAccessCookie,
+  getAccessToken,
+  getRefreshToken,
+  clearAuthCookies,
+} from "./cookies";
+
+// Password utilities
+export { hashPassword, verifyPassword } from "./password";
+
+// Google OAuth
+export {
+  getGoogleAuthUrl,
+  exchangeCodeForToken,
+  getGoogleUserInfo,
+  type GoogleUserInfo,
+} from "./google";
+
+// Constants and types
+export {
+  ACCESS_TOKEN,
+  REFRESH_TOKEN,
+  COOKIE_OPTIONS,
+  GOOGLE_OAUTH,
+  ADMIN_ROLES,
+  type AdminRole,
+} from "./constants";
