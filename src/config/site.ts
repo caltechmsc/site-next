@@ -14,7 +14,7 @@ export const siteConfig = {
   fullName: "Materials and Process Simulation Center",
   description:
     "The Materials and Process Simulation Center (MSC) at Caltech develops and applies advanced simulation methods to solve problems in chemistry, materials science, and biology.",
-  url: "https://msc.caltech.edu",
+  url: "http://localhost:3000", // NOTE: Update for production
 
   // Images
   images: {
