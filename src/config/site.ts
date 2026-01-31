@@ -35,7 +35,8 @@ export const siteConfig = {
   },
 
   // Google Calendar embed URL (for events page)
-  calendarUrl: "",
+  calendarUrl:
+    "https://calendar.google.com/calendar/embed?src=wagoddard3%40gmail.com",
 } as const;
 
 // ============================================================================
