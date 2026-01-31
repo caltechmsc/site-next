@@ -12,21 +12,23 @@ import { z } from "zod";
 // ============================================================================
 
 const envSchema = z.object({
-  // Database
-  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
-
   // Node environment
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
 
+  // Database
+  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+
+  // Authentication (required for admin panel)
+  JWT_SECRET: z.string().min(32, "JWT_SECRET must be at least 32 characters"),
+
+  // Google OAuth (required for admin login)
+  GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
+  GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET is required"),
+
   // External APIs (optional)
   OPENALEX_API_KEY: z.string().optional(),
-
-  // Authentication (optional, for admin panel)
-  // Note: These are validated at runtime by NextAuth, not here
-  NEXTAUTH_SECRET: z.string().optional(),
-  NEXTAUTH_URL: z.string().optional(),
 });
 
 // ============================================================================
