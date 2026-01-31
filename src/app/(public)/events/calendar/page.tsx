@@ -84,7 +84,8 @@ export default function CalendarPage() {
 
       {/* Helper Text */}
       <p className="mt-4 text-center text-xs text-muted-foreground">
-        Click an event to see details. Times are shown in Pacific Time (PT).
+        Click an event to see details. Click "Add to Google Calendar" to add all
+        events to your personal calendar.
       </p>
     </div>
   );
