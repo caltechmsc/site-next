@@ -2,7 +2,7 @@
  * Photo Gallery Component (Client-side)
  *
  * Virtualized gallery with lazy loading for large photo collections.
- * Uses window-based virtualization for natural page scrolling.
+ * Uses window-based virtualization with dynamic row measurement.
  */
 
 "use client";
@@ -31,13 +31,6 @@ type GalleryRow =
       photos: GroupPhoto[];
       startIndex: number;
     };
-
-// ============================================================================
-// Constants
-// ============================================================================
-
-const ROW_HEIGHT = 280; // Approximate height for photo rows
-const HEADER_HEIGHT = 56; // Height for year headers
 
 // ============================================================================
 // Component
@@ -96,11 +89,10 @@ export function PhotoGallery({ photosByYear }: PhotoGalleryProps) {
     return result;
   }, [photosByYear, columnsPerRow]);
 
-  // Window-based virtualizer - scrolls with the page naturally
+  // Window-based virtualizer with dynamic measurement
   const virtualizer = useWindowVirtualizer({
     count: rows.length,
-    estimateSize: (index) =>
-      rows[index].type === "header" ? HEADER_HEIGHT : ROW_HEIGHT,
+    estimateSize: () => 200, // Initial estimate, will be replaced by measured values
     overscan: 5,
     scrollMargin: listRef.current?.offsetTop ?? 0,
   });
@@ -187,6 +179,8 @@ export function PhotoGallery({ photosByYear }: PhotoGalleryProps) {
             return (
               <div
                 key={`header-${row.year}`}
+                data-index={virtualRow.index}
+                ref={virtualizer.measureElement}
                 style={{
                   position: "absolute",
                   top: 0,
@@ -203,16 +197,17 @@ export function PhotoGallery({ photosByYear }: PhotoGalleryProps) {
           return (
             <div
               key={`row-${row.yearIndex}-${row.startIndex}`}
+              data-index={virtualRow.index}
+              ref={virtualizer.measureElement}
               style={{
                 position: "absolute",
                 top: 0,
                 left: 0,
                 width: "100%",
                 transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
-                paddingBottom: "16px",
               }}
             >
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 pb-4 sm:grid-cols-2 lg:grid-cols-3">
                 {row.photos.map((photo, i) => (
                   <PhotoCard
                     key={photo.id}
