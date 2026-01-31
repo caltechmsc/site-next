@@ -247,32 +247,51 @@ export function CollaboratorMap({
 // Helpers
 // ============================================================================
 
+/**
+ * Escapes HTML special characters to prevent XSS attacks.
+ * Used for sanitizing user-provided content before inserting into DOM.
+ */
+function escapeHtml(text: string): string {
+  const htmlEscapes: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  };
+  return text.replace(/[&<>"']/g, (char) => htmlEscapes[char]);
+}
+
 function createPopupContent(collaborator: CollaboratorWithCoords): string {
   const parts: string[] = [];
 
   parts.push(`<div class="popup-content">`);
-  parts.push(`<h3 class="popup-title">${collaborator.organization}</h3>`);
+  parts.push(
+    `<h3 class="popup-title">${escapeHtml(collaborator.organization)}</h3>`
+  );
 
   if (collaborator.leader) {
-    parts.push(`<p class="popup-leader">${collaborator.leader}</p>`);
+    parts.push(
+      `<p class="popup-leader">${escapeHtml(collaborator.leader)}</p>`
+    );
   }
 
   if (collaborator.city || collaborator.country) {
     const location = [collaborator.city, collaborator.country]
       .filter(Boolean)
       .join(", ");
-    parts.push(`<p class="popup-location">${location}</p>`);
+    parts.push(`<p class="popup-location">${escapeHtml(location)}</p>`);
   }
 
   parts.push(`<div class="popup-links">`);
   if (collaborator.website) {
     parts.push(
-      `<a href="${collaborator.website}" target="_blank" rel="noopener noreferrer" class="popup-link">Website</a>`
+      `<a href="${escapeHtml(collaborator.website)}" target="_blank" rel="noopener noreferrer" class="popup-link">Website</a>`
     );
   }
   if (collaborator.email) {
     parts.push(
-      `<a href="mailto:${collaborator.email}" class="popup-link">Email</a>`
+      `<a href="mailto:${escapeHtml(collaborator.email)}" class="popup-link">Email</a>`
     );
   }
   parts.push(`</div>`);
