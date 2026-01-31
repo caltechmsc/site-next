@@ -78,9 +78,20 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="border-b bg-gradient-to-b from-background to-muted/20">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-          <div className="max-w-3xl">
+      <section className="relative border-b">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${siteConfig.images.heroBackground})`,
+          }}
+        >
+          <div className="dark:from-background/98 absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60 dark:via-background/90 dark:to-background/70" />
+        </div>
+
+        {/* Content */}
+        <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
+          <div className="max-w-2xl">
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
               {siteConfig.fullName}
             </h1>
