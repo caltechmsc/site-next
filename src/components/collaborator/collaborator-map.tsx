@@ -13,6 +13,14 @@ import type { CollaboratorWithCoords } from "@/lib/db/queries/collaborators";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
+// Constants
+// ============================================================================
+
+const LEAFLET_CSS_URL = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+const LEAFLET_CSS_INTEGRITY =
+  "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
+
+// ============================================================================
 // Types
 // ============================================================================
 
@@ -54,6 +62,19 @@ export function CollaboratorMap({
       lng: c.longitude!,
       data: c,
     }));
+
+  // Load Leaflet CSS on mount (only when this component is used)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (document.querySelector(`link[href="${LEAFLET_CSS_URL}"]`)) return;
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = LEAFLET_CSS_URL;
+    link.integrity = LEAFLET_CSS_INTEGRITY;
+    link.crossOrigin = "";
+    document.head.appendChild(link);
+  }, []);
 
   // Initialize map
   useEffect(() => {
