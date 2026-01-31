@@ -173,38 +173,45 @@ export function CollaboratorMap({
   useEffect(() => {
     if (!mapRef.current || !isLoaded) return;
 
-    const L = require("leaflet");
+    const updateMarkers = async () => {
+      const L = (await import("leaflet")).default;
 
-    markersRef.current.forEach((marker, id) => {
-      const isSelected = id === selectedId;
-      marker.setIcon(
-        L.divIcon({
-          className: "custom-marker",
-          html: `
+      markersRef.current.forEach((marker, id) => {
+        const isSelected = id === selectedId;
+        marker.setIcon(
+          L.divIcon({
+            className: "custom-marker",
+            html: `
             <div class="${isSelected ? "marker-selected" : "marker-default"}">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
               </svg>
             </div>
           `,
-          iconSize: [24, 24],
-          iconAnchor: [12, 24],
-          popupAnchor: [0, -24],
-        })
-      );
+            iconSize: [24, 24],
+            iconAnchor: [12, 24],
+            popupAnchor: [0, -24],
+          })
+        );
 
-      // Open popup if selected
-      if (isSelected) {
-        marker.openPopup();
-        const markerData = markers.find((m) => m.id === id);
-        if (markerData) {
-          mapRef.current?.setView([markerData.lat, markerData.lng], 5, {
-            animate: true,
-          });
+        // Open popup if selected
+        if (isSelected) {
+          marker.openPopup();
+          const markerData = markers.find((m) => m.id === id);
+          if (markerData) {
+            mapRef.current?.setView([markerData.lat, markerData.lng], 5, {
+              animate: true,
+            });
+          }
         }
-      }
-    });
-  }, [selectedId, isLoaded, markers]);
+      });
+    };
+
+    updateMarkers();
+    // markers intentionally excluded - only needed for pan-to behavior on selection,
+    // including it would cause unnecessary icon updates on every markers change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId, isLoaded]);
 
   return (
     <div className={cn("relative overflow-hidden rounded-lg", className)}>
