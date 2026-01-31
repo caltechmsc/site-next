@@ -94,8 +94,7 @@ export function CollaboratorMap({
       const map = L.map(mapContainerRef.current!, {
         center: [20, 0],
         zoom: 2,
-        minZoom: 1,
-        maxZoom: 10,
+        minZoom: 2,
         scrollWheelZoom: true,
         zoomControl: true,
       });
