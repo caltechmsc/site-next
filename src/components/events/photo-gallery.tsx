@@ -49,9 +49,19 @@ export function PhotoGallery({ photosByYear }: PhotoGalleryProps) {
       else setColumnsPerRow(3);
     };
 
-    updateColumns();
-    window.addEventListener("resize", updateColumns);
-    return () => window.removeEventListener("resize", updateColumns);
+    // Debounce resize handler to avoid excessive re-renders
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const debouncedUpdate = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(updateColumns, 150);
+    };
+
+    updateColumns(); // Initial call
+    window.addEventListener("resize", debouncedUpdate);
+    return () => {
+      window.removeEventListener("resize", debouncedUpdate);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   // Flatten all photos for lightbox navigation
