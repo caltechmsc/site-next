@@ -91,9 +91,9 @@ interface AdminSeed {
 const avatar = (name: string, size = 256) =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=${size}&background=random&color=fff`;
 
-/** Generate placeholder image URL */
-const placeholder = (width: number, height: number, text: string) =>
-  `https://placehold.co/${width}x${height}/E5E7EB/374151?text=${encodeURIComponent(text)}`;
+/** Generate random group photo URL using picsum.photos */
+const groupPhoto = (seed: number | string) =>
+  `https://picsum.photos/seed/${seed}/1200/800`;
 
 /** Simple password hash (for seed only, use bcrypt in production) */
 const hashPassword = (password: string) => hash("sha256", password, "hex");
@@ -547,23 +547,48 @@ const COLLABORATORS: CollaboratorSeed[] = [
   },
 ];
 
-const GROUP_PHOTOS: GroupPhotoSeed[] = [
-  {
-    date: new Date("2025-01-10"),
-    caption: "MSC Group Photo - New Year 2025",
-    order: 100,
-  },
-  {
-    date: new Date("2024-06-15"),
-    caption: "MSC Summer Retreat 2024",
-    order: 200,
-  },
-  {
-    date: new Date("2023-12-20"),
-    caption: "MSC Holiday Party 2023",
-    order: 300,
-  },
-];
+// Generate 1000 group photos across years
+const GROUP_PHOTOS: GroupPhotoSeed[] = (() => {
+  const events = [
+    "New Year Celebration",
+    "Spring Retreat",
+    "Summer BBQ",
+    "Fall Workshop",
+    "Holiday Party",
+    "Group Meeting",
+    "Lab Tour",
+    "Conference Trip",
+    "Team Building",
+    "Research Symposium",
+    "Welcome Event",
+    "Farewell Party",
+    "Anniversary Celebration",
+    "Outdoor Excursion",
+    "Award Ceremony",
+  ];
+
+  const photos: GroupPhotoSeed[] = [];
+
+  for (let year = 2000; year <= 2025; year++) {
+    // ~40 photos per year to reach 1000+
+    const photosThisYear = 35 + Math.floor(Math.random() * 10);
+    for (let i = 0; i < photosThisYear && photos.length < 1000; i++) {
+      const month = Math.floor(Math.random() * 12) + 1;
+      const day = Math.floor(Math.random() * 28) + 1;
+      const event = events[Math.floor(Math.random() * events.length)];
+
+      photos.push({
+        date: new Date(
+          `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+        ),
+        caption: `MSC ${event} ${year}`,
+        order: photos.length * 10,
+      });
+    }
+  }
+
+  return photos;
+})();
 
 const DEFAULT_ADMIN: AdminSeed = {
   email: "admin@msc.caltech.edu",
@@ -770,15 +795,11 @@ async function seedGroupPhotos() {
   console.log("📷 Seeding group photos...");
 
   await Promise.all(
-    GROUP_PHOTOS.map((photo) =>
+    GROUP_PHOTOS.map((photo, index) =>
       prisma.groupPhoto.create({
         data: {
           date: photo.date,
-          imageUrl: placeholder(
-            1200,
-            800,
-            `Group Photo ${photo.date.getFullYear()}`
-          ),
+          imageUrl: groupPhoto(`msc-photo-${index}`),
           caption: photo.caption,
           order: photo.order,
         },
