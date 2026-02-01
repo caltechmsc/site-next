@@ -5,6 +5,8 @@
 // Session management (high-level API)
 export {
   getCurrentUser,
+  getCurrentUserWithRefresh,
+  refreshSession,
   loginWithPassword,
   loginWithGoogle,
   logout,

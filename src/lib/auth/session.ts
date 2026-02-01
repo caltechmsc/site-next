@@ -42,29 +42,36 @@ export type AuthResult =
 // ============================================================================
 
 /**
- * Get the current authenticated user from session.
+ * Get the current authenticated user from access token only.
  *
- * Flow:
- * 1. Try to verify access token
- * 2. If expired, try to refresh using refresh token
- * 3. If refresh fails, return null (user must re-login)
+ * This is a read-only operation safe for Server Components.
  */
 export async function getCurrentUser(): Promise<SessionUser | null> {
-  // Step 1: Try access token
   const accessToken = await getAccessToken();
-  if (accessToken) {
-    const payload = await verifyAccessToken(accessToken);
-    if (payload) {
-      return {
-        id: payload.sub,
-        email: payload.email,
-        name: payload.name,
-        role: payload.role,
-      };
-    }
+  if (!accessToken) {
+    return null;
   }
 
-  // Step 2: Access token invalid/expired, try refresh
+  const payload = await verifyAccessToken(accessToken);
+  if (!payload) {
+    return null;
+  }
+
+  return {
+    id: payload.sub,
+    email: payload.email,
+    name: payload.name,
+    role: payload.role,
+  };
+}
+
+/**
+ * Attempt to refresh the session using refresh token.
+ *
+ * WARNING: This WRITES cookies and should only be used in Route Handlers,
+ * Server Actions, or Middleware.
+ */
+export async function refreshSession(): Promise<SessionUser | null> {
   const refreshToken = await getRefreshToken();
   if (!refreshToken) {
     return null;
@@ -72,12 +79,12 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
 
   const refreshPayload = await verifyRefreshToken(refreshToken);
   if (!refreshPayload) {
-    // Refresh token also invalid, clear cookies
+    // Refresh token invalid, clear cookies
     await clearAuthCookies();
     return null;
   }
 
-  // Step 3: Refresh token valid, verify user still exists in DB
+  // Verify user still exists in DB (important for deleted/banned users)
   const admin = await prisma.admin.findUnique({
     where: { id: refreshPayload.sub },
     select: { id: true, email: true, name: true, role: true },
@@ -89,7 +96,7 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
     return null;
   }
 
-  // Step 4: Issue new access token
+  // Issue new access token
   const newAccessToken = await signAccessToken({
     id: admin.id,
     email: admin.email,
@@ -105,6 +112,23 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
     name: admin.name,
     role: admin.role as AdminRole,
   };
+}
+
+/**
+ * Get current user, attempting refresh if access token expired.
+ *
+ * WARNING: This WRITES cookies and should only be used in Route Handlers,
+ * Server Actions, or Middleware.
+ */
+export async function getCurrentUserWithRefresh(): Promise<SessionUser | null> {
+  // First try access token (fast path)
+  const user = await getCurrentUser();
+  if (user) {
+    return user;
+  }
+
+  // Access token invalid/expired, try refresh
+  return refreshSession();
 }
 
 // ============================================================================
