@@ -55,6 +55,28 @@ export const COOKIE_OPTIONS = {
 } as const;
 
 // ============================================================================
+// OAuth State Cookies
+// ============================================================================
+
+/**
+ * OAuth state cookie for CSRF protection.
+ * Contains cryptographically random value validated in callback.
+ */
+export const OAUTH_STATE_COOKIE = {
+  name: "msc_oauth_state",
+  maxAge: 10 * 60, // 10 minutes in seconds
+} as const;
+
+/**
+ * OAuth redirect cookie.
+ * Stores intended redirect destination after successful OAuth.
+ */
+export const OAUTH_REDIRECT_COOKIE = {
+  name: "msc_oauth_redirect",
+  maxAge: 10 * 60, // 10 minutes in seconds
+} as const;
+
+// ============================================================================
 // Google OAuth Configuration
 // ============================================================================
 
