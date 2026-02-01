@@ -14,6 +14,7 @@ import {
   isAuthPage,
   isAuthenticated,
 } from "@/lib/auth/middleware";
+import { sanitizeRedirectUrl } from "@/lib/auth/validation";
 
 // ============================================================================
 // Middleware
@@ -30,7 +31,10 @@ export async function middleware(request: NextRequest) {
   // Auth pages: redirect authenticated users to admin dashboard
   if (isAuthPage(pathname)) {
     if (await isAuthenticated(request)) {
-      let redirectTo = request.nextUrl.searchParams.get("redirect") || "/admin";
+      let redirectTo = sanitizeRedirectUrl(
+        request.nextUrl.searchParams.get("redirect"),
+        "/admin"
+      );
       if (isAuthPage(redirectTo)) {
         redirectTo = "/admin";
       }
