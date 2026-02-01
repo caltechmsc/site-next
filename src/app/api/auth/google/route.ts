@@ -5,20 +5,62 @@
  * Redirects user to Google's consent page.
  */
 
+import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 import { getGoogleAuthUrl } from "@/lib/auth";
+import {
+  OAUTH_STATE_COOKIE,
+  OAUTH_REDIRECT_COOKIE,
+} from "@/lib/auth/constants";
+
+/**
+ * Validate that a redirect URL is safe (relative path only).
+ */
+function isValidRedirectUrl(url: string): boolean {
+  // Must start with / and not be a protocol-relative URL
+  if (!url.startsWith("/") || url.startsWith("//")) {
+    return false;
+  }
+  // Reject URLs with newlines (HTTP header injection)
+  if (url.includes("\n") || url.includes("\r")) {
+    return false;
+  }
+  return true;
+}
 
 export async function GET(request: NextRequest) {
-  // Optional: store redirect URL in state
-  const redirectTo = request.nextUrl.searchParams.get("redirect") || "/admin";
+  // Validate and sanitize redirect URL
+  const requestedRedirect = request.nextUrl.searchParams.get("redirect");
+  const redirectTo =
+    requestedRedirect && isValidRedirectUrl(requestedRedirect)
+      ? requestedRedirect
+      : "/admin";
 
-  // Generate state to prevent CSRF
-  const state = Buffer.from(JSON.stringify({ redirectTo })).toString(
-    "base64url"
-  );
+  // Generate cryptographically random state for CSRF protection
+  const state = randomBytes(32).toString("base64url");
 
   const authUrl = getGoogleAuthUrl(state);
 
-  return NextResponse.redirect(authUrl);
+  const response = NextResponse.redirect(authUrl);
+
+  // Store state in HttpOnly cookie for verification in callback
+  response.cookies.set(OAUTH_STATE_COOKIE.name, state, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: OAUTH_STATE_COOKIE.maxAge,
+    path: "/",
+  });
+
+  // Store redirect target in separate cookie
+  response.cookies.set(OAUTH_REDIRECT_COOKIE.name, redirectTo, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: OAUTH_REDIRECT_COOKIE.maxAge,
+    path: "/",
+  });
+
+  return response;
 }
