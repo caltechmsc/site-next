@@ -24,7 +24,7 @@ export const siteConfig = {
   },
 
   // Contact
-  email: "msc@caltech.edu",
+  email: "wag@caltech.edu",
   address: {
     line1: "California Institute of Technology",
     line2: "1200 E California Blvd, MC 139-74",
