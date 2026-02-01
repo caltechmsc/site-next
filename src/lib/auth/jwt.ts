@@ -111,7 +111,9 @@ export async function verifyAccessToken(
   token: string
 ): Promise<AccessTokenPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, getSecret());
+    const { payload } = await jwtVerify(token, getSecret(), {
+      algorithms: [ACCESS_TOKEN.algorithm],
+    });
 
     // Type guard: ensure it's an access token
     if (payload.type !== "access") {
@@ -132,7 +134,9 @@ export async function verifyRefreshToken(
   token: string
 ): Promise<RefreshTokenPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, getSecret());
+    const { payload } = await jwtVerify(token, getSecret(), {
+      algorithms: [REFRESH_TOKEN.algorithm],
+    });
 
     // Type guard: ensure it's a refresh token
     if (payload.type !== "refresh") {
