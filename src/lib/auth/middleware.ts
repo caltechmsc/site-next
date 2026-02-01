@@ -53,6 +53,17 @@ export async function checkAuthStatus(
   return { status: "unauthenticated", loginUrl };
 }
 
+/**
+ * Quick check if user has valid access token.
+ */
+export async function isAuthenticated(request: NextRequest): Promise<boolean> {
+  const accessToken = request.cookies.get(ACCESS_TOKEN.name)?.value;
+  if (!accessToken) return false;
+
+  const payload = await verifyAccessToken(accessToken);
+  return payload !== null;
+}
+
 // ============================================================================
 // URL Builders
 // ============================================================================
