@@ -59,8 +59,8 @@ export const COOKIE_OPTIONS = {
 // ============================================================================
 
 export const GOOGLE_OAUTH = {
-  clientId: env.GOOGLE_CLIENT_ID ?? "",
-  clientSecret: env.GOOGLE_CLIENT_SECRET ?? "",
+  clientId: env.GOOGLE_CLIENT_ID,
+  clientSecret: env.GOOGLE_CLIENT_SECRET,
   redirectUri: `${siteConfig.url}/api/auth/google/callback`,
   scopes: ["openid", "email", "profile"],
   authUrl: "https://accounts.google.com/o/oauth2/v2/auth",
