@@ -8,34 +8,17 @@
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
-import { getGoogleAuthUrl } from "@/lib/auth";
 import {
+  getGoogleAuthUrl,
+  sanitizeRedirectUrl,
   OAUTH_STATE_COOKIE,
   OAUTH_REDIRECT_COOKIE,
-} from "@/lib/auth/constants";
-
-/**
- * Validate that a redirect URL is safe (relative path only).
- */
-function isValidRedirectUrl(url: string): boolean {
-  // Must start with / and not be a protocol-relative URL
-  if (!url.startsWith("/") || url.startsWith("//")) {
-    return false;
-  }
-  // Reject URLs with newlines (HTTP header injection)
-  if (url.includes("\n") || url.includes("\r")) {
-    return false;
-  }
-  return true;
-}
+} from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   // Validate and sanitize redirect URL
   const requestedRedirect = request.nextUrl.searchParams.get("redirect");
-  const redirectTo =
-    requestedRedirect && isValidRedirectUrl(requestedRedirect)
-      ? requestedRedirect
-      : "/admin";
+  const redirectTo = sanitizeRedirectUrl(requestedRedirect, "/admin");
 
   // Generate cryptographically random state for CSRF protection
   const state = randomBytes(32).toString("base64url");
