@@ -11,6 +11,8 @@ import {
   checkAuthStatus,
   requiresAuth,
   isPublicApiRoute,
+  isAuthPage,
+  isAuthenticated,
 } from "@/lib/auth/middleware";
 
 // ============================================================================
@@ -25,7 +27,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check if route requires authentication
+  // Auth pages: redirect authenticated users to admin dashboard
+  if (isAuthPage(pathname)) {
+    if (await isAuthenticated(request)) {
+      let redirectTo = request.nextUrl.searchParams.get("redirect") || "/admin";
+      if (isAuthPage(redirectTo)) {
+        redirectTo = "/admin";
+      }
+      return NextResponse.redirect(new URL(redirectTo, request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Protected routes: check authentication
   if (!requiresAuth(pathname)) {
     return NextResponse.next();
   }
