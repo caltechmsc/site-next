@@ -30,7 +30,7 @@ export function createPageMetadata(
     title,
     description = siteConfig.description,
     path = "",
-    image = siteConfig.ogImage,
+    image = siteConfig.images.ogImage,
     noIndex = false,
   } = options;
 
@@ -82,7 +82,7 @@ export function createMemberMetadata(member: {
     title,
     description,
     path: `/members/${member.id}`,
-    image: member.photo || siteConfig.ogImage,
+    image: member.photo || siteConfig.images.ogImage,
   });
 }
 

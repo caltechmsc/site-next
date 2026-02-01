@@ -6,7 +6,7 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { hash } from "crypto";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -95,8 +95,8 @@ const avatar = (name: string, size = 256) =>
 const groupPhoto = (seed: number | string) =>
   `https://picsum.photos/seed/${seed}/1200/800`;
 
-/** Simple password hash (for seed only, use bcrypt in production) */
-const hashPassword = (password: string) => hash("sha256", password, "hex");
+/** Hash password using bcrypt */
+const hashPassword = async (password: string) => bcrypt.hash(password, 12);
 
 /** JSON stringify helper */
 const json = (arr: string[]) => JSON.stringify(arr);
@@ -811,11 +811,13 @@ async function seedGroupPhotos() {
 async function seedAdmin() {
   console.log("🔐 Seeding admin user...");
 
+  const passwordHash = await hashPassword(DEFAULT_ADMIN.password);
+
   await prisma.admin.create({
     data: {
       email: DEFAULT_ADMIN.email,
       name: DEFAULT_ADMIN.name,
-      passwordHash: hashPassword(DEFAULT_ADMIN.password),
+      passwordHash,
       role: DEFAULT_ADMIN.role,
     },
   });
