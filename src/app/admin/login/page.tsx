@@ -17,12 +17,19 @@ import { Label } from "@/components/ui/label";
 // ============================================================================
 
 const ERROR_MESSAGES: Record<string, string> = {
+  // OAuth errors
   oauth_denied: "Google sign-in was cancelled",
   missing_code: "Invalid OAuth response",
+  invalid_state: "Invalid OAuth state. Please try again",
   email_not_verified: "Please verify your Google email first",
   not_authorized: "This account is not authorized as an administrator",
   oauth_failed: "Google sign-in failed. Please try again",
+  // Login errors
   invalid_credentials: "Invalid email or password",
+  // Session errors
+  session_expired: "Your session has expired. Please sign in again",
+  account_deleted: "Your account has been removed",
+  refresh_failed: "Failed to refresh session. Please sign in again",
 };
 
 // ============================================================================
