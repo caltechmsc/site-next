@@ -7,6 +7,10 @@ on:
 env:
   DATABASE_URL: "file:./ci.db"
 
+  JWT_SECRET: "this-is-a-dummy-jwt-secret-for-ci-build-only-at-least-32-chars-long"
+  GOOGLE_CLIENT_ID: "dummy-google-client-id-for-ci.apps.googleusercontent.com"
+  GOOGLE_CLIENT_SECRET: "dummy-google-client-secret-for-ci"
+
 jobs:
   build:
     runs-on: ubuntu-latest
