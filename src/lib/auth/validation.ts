@@ -4,10 +4,6 @@
  * Shared validation functions for auth-related operations.
  */
 
-import { NextRequest, NextResponse } from "next/server";
-
-import { OAUTH_STATE_COOKIE, OAUTH_REDIRECT_COOKIE } from "./constants";
-
 // ============================================================================
 // URL Validation
 // ============================================================================
@@ -41,28 +37,4 @@ export function sanitizeRedirectUrl(
   }
 
   return isValidRedirectUrl(requestedUrl) ? requestedUrl : defaultUrl;
-}
-
-// ============================================================================
-// OAuth Error Responses
-// ============================================================================
-
-/**
- * Create an error redirect response for OAuth flows.
- * Redirects to login page with error parameter and clears OAuth cookies.
- */
-export function createOAuthErrorRedirect(
-  request: NextRequest,
-  errorCode: string
-): NextResponse {
-  const errorUrl = new URL("/admin/login", request.url);
-  errorUrl.searchParams.set("error", errorCode);
-
-  const response = NextResponse.redirect(errorUrl);
-
-  // Clear OAuth state cookies to prevent reuse
-  response.cookies.delete(OAUTH_STATE_COOKIE.name);
-  response.cookies.delete(OAUTH_REDIRECT_COOKIE.name);
-
-  return response;
 }

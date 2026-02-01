@@ -48,11 +48,7 @@ export {
 } from "./google";
 
 // Validation utilities
-export {
-  isValidRedirectUrl,
-  sanitizeRedirectUrl,
-  createOAuthErrorRedirect,
-} from "./validation";
+export { isValidRedirectUrl, sanitizeRedirectUrl } from "./validation";
 
 // Constants and types
 export {
