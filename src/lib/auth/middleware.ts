@@ -79,7 +79,14 @@ function buildLoginUrl(baseUrl: string, redirectPath: string): string {
  * Check if path requires authentication.
  */
 export function requiresAuth(pathname: string): boolean {
-  return pathname.startsWith("/admin") && !pathname.startsWith("/admin/login");
+  return pathname.startsWith("/admin") && !isAuthPage(pathname);
+}
+
+/**
+ * Check if path is an authentication page (login, etc.).
+ */
+export function isAuthPage(pathname: string): boolean {
+  return pathname.startsWith("/admin/login");
 }
 
 /**
