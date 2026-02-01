@@ -84,8 +84,8 @@ export default function CalendarPage() {
 
       {/* Helper Text */}
       <p className="mt-4 text-center text-xs text-muted-foreground">
-        Click an event to see details. Click &ldquo;Add to Google Calendar&rdquo; to add all
-        events to your personal calendar.
+        Click an event to see details. Click &ldquo;Add to Google
+        Calendar&rdquo; to add all events to your personal calendar.
       </p>
     </div>
   );
