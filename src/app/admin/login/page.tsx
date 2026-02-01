@@ -74,8 +74,9 @@ function LoginForm() {
         return;
       }
 
-      // Success - redirect to admin dashboard
-      router.push("/admin");
+      // Success - redirect to target URL or admin dashboard
+      const redirectTo = searchParams.get("redirect") || "/admin";
+      router.push(redirectTo);
       router.refresh();
     } catch {
       setError("An unexpected error occurred");
@@ -86,7 +87,8 @@ function LoginForm() {
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    window.location.href = "/api/auth/google";
+    const redirectTo = searchParams.get("redirect") || "/admin";
+    window.location.href = `/api/auth/google?redirect=${encodeURIComponent(redirectTo)}`;
   };
 
   return (
