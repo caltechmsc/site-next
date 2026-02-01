@@ -32,8 +32,8 @@ model Member {
   // Classification
   category   MemberCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   categoryId String
-  startDate  DateTime
-  endDate    DateTime?
+  startDate  String // ISO date format: "YYYY-MM-DD"
+  endDate    String? // ISO date format: "YYYY-MM-DD"
 
   // Management
   order    Int     @default(0)
@@ -78,7 +78,7 @@ model Publication {
   title    String
   authors  String // JSON array stored as string
   abstract String?
-  date     DateTime
+  date     String // ISO date format: "YYYY-MM-DD"
   journal  String?
   volume   String?
   issue    String?
@@ -168,8 +168,8 @@ model Collaborator {
 // ============================================================================
 
 model GroupPhoto {
-  id       String   @id @default(cuid())
-  date     DateTime
+  id       String  @id @default(cuid())
+  date     String // ISO date format: "YYYY-MM-DD"
   imageUrl String
   caption  String?
 
