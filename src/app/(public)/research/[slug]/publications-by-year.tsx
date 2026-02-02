@@ -6,6 +6,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import type { Publication, Member } from "@/types";
 import { Button } from "@/components/ui/button";
 import { PublicationCard } from "@/components/publication";
+import { getYear } from "@/lib/date";
 
 // ============================================================================
 // Constants
@@ -150,7 +151,7 @@ function groupByYear(
 ): Record<string, PublicationWithMembers[]> {
   return publications.reduce(
     (acc, item) => {
-      const year = new Date(item.publication.date).getFullYear().toString();
+      const year = getYear(item.publication.date).toString();
       if (!acc[year]) {
         acc[year] = [];
       }
