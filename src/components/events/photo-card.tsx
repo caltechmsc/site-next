@@ -13,6 +13,7 @@ import { Expand } from "lucide-react";
 
 import type { GroupPhoto } from "@/types";
 import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/date";
 
 // ============================================================================
 // Types
@@ -39,11 +40,7 @@ export function PhotoCard({
   const [isLoaded, setIsLoaded] = useState(false);
   const ref = useRef<HTMLButtonElement>(null);
 
-  const date = new Date(photo.date);
-  const formattedDate = date.toLocaleDateString("en-US", {
-    month: "short",
-    year: "numeric",
-  });
+  const formattedDate = formatDate(photo.date, "short");
 
   // Intersection Observer for lazy loading
   useEffect(() => {
