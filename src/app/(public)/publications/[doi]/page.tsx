@@ -21,6 +21,7 @@ import {
   createNotFoundMetadata,
 } from "@/lib/metadata";
 import { parseAuthors, getInitials, formatCompactNumber } from "@/lib/format";
+import { getYear } from "@/lib/date";
 import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -82,7 +83,7 @@ export default async function PublicationDetailPage({ params }: PageProps) {
   }
 
   const authors = parseAuthors(publication.authors);
-  const year = new Date(publication.date).getFullYear();
+  const year = getYear(publication.date);
   const hasMembers = publication.members.length > 0;
   const hasAreas = publication.researchAreas.length > 0;
 
