@@ -7,6 +7,7 @@
 import type { Metadata } from "next";
 import { siteConfig, seoDefaults } from "@/config/site";
 import { truncateAtWordBoundary } from "@/lib/format";
+import { getYear } from "@/lib/date";
 
 // ============================================================================
 // Page Metadata Builders
@@ -114,9 +115,9 @@ export function createPublicationMetadata(publication: {
   authors: string;
   abstract?: string | null;
   journal?: string | null;
-  date: Date;
+  date: string;
 }): Metadata {
-  const year = new Date(publication.date).getFullYear();
+  const year = getYear(publication.date);
   const description = publication.abstract
     ? truncateAtWordBoundary(publication.abstract, 160)
     : `${publication.title} (${year})${publication.journal ? ` - ${publication.journal}` : ""}`;
