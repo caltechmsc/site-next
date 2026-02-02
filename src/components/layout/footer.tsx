@@ -2,13 +2,14 @@ import { Mail, MapPin, ExternalLink } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
 import { Separator } from "@/components/ui/separator";
+import { getCurrentYear } from "@/lib/date";
 
 // ============================================================================
 // Footer Component
 // ============================================================================
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const currentYear = getCurrentYear();
 
   return (
     <footer className="border-t bg-muted/30">
