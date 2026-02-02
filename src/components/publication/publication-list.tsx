@@ -12,6 +12,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 
 import type { PublicationListItem } from "@/types";
 import { cn } from "@/lib/utils";
+import { getYear } from "@/lib/date";
 import { PublicationCard } from "./publication-card";
 import {
   PublicationFilters,
@@ -64,7 +65,7 @@ export function PublicationList({
 
       // Year filter
       if (filters.year) {
-        const pubYear = new Date(pub.date).getFullYear();
+        const pubYear = getYear(pub.date);
         if (pubYear !== filters.year) {
           return false;
         }
