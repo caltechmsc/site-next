@@ -20,7 +20,8 @@ import {
   getAllMemberIds,
 } from "@/lib/db/queries/members";
 import { createMemberMetadata, createNotFoundMetadata } from "@/lib/metadata";
-import { getInitials, formatTenure, formatCompactNumber } from "@/lib/format";
+import { getInitials, formatCompactNumber } from "@/lib/format";
+import { getYear, formatTenure } from "@/lib/date";
 import { PublicationTimeline } from "@/components/member";
 import { PublicationCard } from "@/components/publication";
 import { Badge } from "@/components/ui/badge";
@@ -313,7 +314,7 @@ function groupPublicationsByYear(
 ): Record<string, typeof publications> {
   return publications.reduce(
     (acc, pub) => {
-      const year = new Date(pub.date).getFullYear().toString();
+      const year = getYear(pub.date).toString();
       if (!acc[year]) {
         acc[year] = [];
       }
