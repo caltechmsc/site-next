@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 
 import { getCurrentUser } from "@/lib/auth";
-import { LogoutButton } from "@/components/auth/logout-button";
 
 // ============================================================================
 // Admin Dashboard
@@ -24,9 +23,6 @@ export default async function AdminDashboardPage() {
         <p className="mt-4 text-sm text-muted-foreground">
           Role: <span className="font-medium">{user.role}</span>
         </p>
-        <div className="mt-6">
-          <LogoutButton />
-        </div>
       </div>
     </div>
   );
