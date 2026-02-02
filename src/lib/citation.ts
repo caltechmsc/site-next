@@ -5,6 +5,8 @@
  * Supports APA, MLA, and BibTeX formats.
  */
 
+import { getYear } from "@/lib/date";
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -13,7 +15,7 @@ export interface CitationData {
   doi: string;
   title: string;
   authors: string[];
-  date: Date;
+  date: string; // ISO date string: YYYY-MM-DD
   journal: string | null;
   volume: string | null;
   issue: string | null;
@@ -68,7 +70,7 @@ export function getAllCitationFormats(
  */
 function formatAPA(data: CitationData): string {
   const authors = data.authors;
-  const year = new Date(data.date).getFullYear();
+  const year = getYear(data.date);
 
   // Format authors: "Last, F. M., & Last, F. M."
   const formattedAuthors = formatAuthorsAPA(authors);
@@ -105,7 +107,7 @@ function formatAPA(data: CitationData): string {
  */
 function formatMLA(data: CitationData): string {
   const authors = data.authors;
-  const year = new Date(data.date).getFullYear();
+  const year = getYear(data.date);
 
   // Format authors: "Last, First, and First Last"
   const formattedAuthors = formatAuthorsMLA(authors);
@@ -148,7 +150,7 @@ function formatMLA(data: CitationData): string {
  */
 function formatBibTeX(data: CitationData): string {
   const authors = data.authors;
-  const year = new Date(data.date).getFullYear();
+  const year = getYear(data.date);
 
   // Generate citation key: FirstAuthorLastName + Year
   const citationKey = generateBibTeXKey(authors[0] || "Unknown", year);
