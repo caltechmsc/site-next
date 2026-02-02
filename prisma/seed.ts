@@ -28,10 +28,10 @@ interface MemberSeed {
   education: string;
   bio: string;
   category: string;
-  startDate: Date;
+  startDate: string; // ISO date: "YYYY-MM-DD"
   website?: string;
   orcid?: string;
-  endDate?: Date;
+  endDate?: string; // ISO date: "YYYY-MM-DD"
 }
 
 interface ResearchAreaSeed {
@@ -48,7 +48,7 @@ interface PublicationSeed {
   title: string;
   authors: string; // JSON string
   abstract: string;
-  date: Date;
+  date: string; // ISO date: "YYYY-MM-DD"
   journal: string;
   volume: string;
   issue: string;
@@ -71,7 +71,7 @@ interface CollaboratorSeed {
 }
 
 interface GroupPhotoSeed {
-  date: Date;
+  date: string; // ISO date: "YYYY-MM-DD"
   caption: string;
   order: number;
 }
@@ -123,7 +123,7 @@ const MEMBERS: MemberSeed[] = [
     website: "https://www.wag.caltech.edu",
     orcid: "0000-0003-0097-5716",
     category: "Faculty",
-    startDate: new Date("1984-01-01"),
+    startDate: "1984-01-01",
   },
   {
     name: "John Smith",
@@ -133,7 +133,7 @@ const MEMBERS: MemberSeed[] = [
     education: "Ph.D. MIT, 2022",
     bio: "Research interests in quantum chemistry and machine learning applications.",
     category: "Postdoc",
-    startDate: new Date("2023-01-15"),
+    startDate: "2023-01-15",
   },
   {
     name: "Jane Doe",
@@ -143,7 +143,7 @@ const MEMBERS: MemberSeed[] = [
     education: "Ph.D. Stanford, 2021",
     bio: "Specializing in ReaxFF development for reactive systems.",
     category: "Postdoc",
-    startDate: new Date("2022-06-01"),
+    startDate: "2022-06-01",
   },
   {
     name: "Alex Chen",
@@ -153,7 +153,7 @@ const MEMBERS: MemberSeed[] = [
     education: "B.S. Tsinghua University, 2021",
     bio: "Working on machine learning potentials for catalysis.",
     category: "Graduate Student",
-    startDate: new Date("2021-09-01"),
+    startDate: "2021-09-01",
   },
   {
     name: "Maria Garcia",
@@ -163,7 +163,7 @@ const MEMBERS: MemberSeed[] = [
     education: "B.S. UC Berkeley, 2022",
     bio: "Developing new methods for energy storage materials.",
     category: "Graduate Student",
-    startDate: new Date("2022-09-01"),
+    startDate: "2022-09-01",
   },
   {
     name: "Robert Wilson",
@@ -174,8 +174,8 @@ const MEMBERS: MemberSeed[] = [
     bio: "Now at Google Research.",
     website: "https://example.com/rwilson",
     category: "Undergraduate Student",
-    startDate: new Date("2015-09-01"),
-    endDate: new Date("2020-06-15"),
+    startDate: "2015-09-01",
+    endDate: "2020-06-15",
   },
 ];
 
@@ -294,7 +294,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["W.A. Goddard III", "J. Smith", "A. Chen"]),
     abstract:
       "We present a new grand canonical DFT method for accurate modeling of electrochemical interfaces with proper treatment of electron chemical potential.",
-    date: new Date("2025-01-15"),
+    date: "2025-01-15",
     journal: "J. Phys. Chem. Lett.",
     volume: "16",
     issue: "2",
@@ -309,7 +309,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["J. Smith", "W.A. Goddard III"]),
     abstract:
       "A machine learning approach to accelerate ReaxFF simulations while maintaining accuracy for catalytic systems.",
-    date: new Date("2024-11-20"),
+    date: "2024-11-20",
     journal: "J. Am. Chem. Soc.",
     volume: "146",
     issue: "45",
@@ -324,7 +324,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["M. Garcia", "W.A. Goddard III"]),
     abstract:
       "Using first-principles calculations to design new solid electrolyte materials for next-generation batteries.",
-    date: new Date("2024-08-10"),
+    date: "2024-08-10",
     journal: "Nat. Mater.",
     volume: "23",
     issue: "8",
@@ -339,7 +339,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["A. Chen", "J. Doe", "W.A. Goddard III"]),
     abstract:
       "Elucidating the complete reaction mechanism for electrochemical CO2 reduction using QM/MM simulations.",
-    date: new Date("2024-06-15"),
+    date: "2024-06-15",
     journal: "Science",
     volume: "384",
     issue: "6700",
@@ -354,7 +354,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["J. Doe", "W.A. Goddard III"]),
     abstract:
       "Molecular dynamics simulations revealing the role of surface defects in Haber-Bosch catalysis.",
-    date: new Date("2024-03-01"),
+    date: "2024-03-01",
     journal: "ACS Catal.",
     volume: "14",
     issue: "5",
@@ -369,7 +369,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["J. Smith", "A. Chen", "W.A. Goddard III"]),
     abstract:
       "Nuclear quantum effects in proton-coupled electron transfer revealed by path integral simulations.",
-    date: new Date("2024-01-22"),
+    date: "2024-01-22",
     journal: "Phys. Rev. Lett.",
     volume: "132",
     issue: "12",
@@ -384,7 +384,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["M. Garcia", "R. Wilson", "W.A. Goddard III"]),
     abstract:
       "ReaxFF simulations provide atomistic insights into lithium metal anode degradation mechanisms.",
-    date: new Date("2023-09-15"),
+    date: "2023-09-15",
     journal: "Nano Lett.",
     volume: "23",
     issue: "18",
@@ -399,7 +399,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["A. Chen", "W.A. Goddard III"]),
     abstract:
       "DFT screening identifies optimal single-atom catalysts for efficient water electrolysis.",
-    date: new Date("2023-07-01"),
+    date: "2023-07-01",
     journal: "Angew. Chem. Int. Ed.",
     volume: "62",
     issue: "28",
@@ -414,7 +414,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["J. Doe", "M. Garcia", "W.A. Goddard III"]),
     abstract:
       "Development and validation of ReaxFF parameters for hybrid organic-inorganic perovskites.",
-    date: new Date("2023-04-20"),
+    date: "2023-04-20",
     journal: "J. Phys. Chem. C",
     volume: "127",
     issue: "16",
@@ -429,7 +429,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["A. Chen", "J. Smith", "W.A. Goddard III"]),
     abstract:
       "A unified framework combining graph neural networks with ReaxFF for accurate and efficient reactive simulations.",
-    date: new Date("2024-05-15"),
+    date: "2024-05-15",
     journal: "Nat. Mach. Intell.",
     volume: "6",
     issue: "5",
@@ -444,7 +444,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["M. Garcia", "A. Chen", "W.A. Goddard III"]),
     abstract:
       "Machine learning models trained on DFT data predict catalytic activity with chemical accuracy.",
-    date: new Date("2024-02-20"),
+    date: "2024-02-20",
     journal: "J. Chem. Theory Comput.",
     volume: "20",
     issue: "4",
@@ -459,7 +459,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["R. Wilson", "W.A. Goddard III"]),
     abstract:
       "A computational framework for rational design of selective oxidation catalysts.",
-    date: new Date("2022-12-01"),
+    date: "2022-12-01",
     journal: "Nat. Catal.",
     volume: "5",
     issue: "12",
@@ -474,7 +474,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["W.A. Goddard III", "J. Doe"]),
     abstract:
       "A comprehensive review of ReaxFF reactive force field methodology and its applications over two decades.",
-    date: new Date("2022-08-15"),
+    date: "2022-08-15",
     journal: "Chem. Rev.",
     volume: "122",
     issue: "16",
@@ -489,7 +489,7 @@ const PUBLICATIONS: PublicationSeed[] = [
     authors: json(["J. Smith", "W.A. Goddard III"]),
     abstract:
       "QM/MM free energy calculations reveal the complete catalytic cycle of cytochrome P450.",
-    date: new Date("2022-03-10"),
+    date: "2022-03-10",
     journal: "Proc. Natl. Acad. Sci. U.S.A.",
     volume: "119",
     issue: "10",
@@ -577,10 +577,10 @@ const GROUP_PHOTOS: GroupPhotoSeed[] = (() => {
       const day = Math.floor(Math.random() * 28) + 1;
       const event = events[Math.floor(Math.random() * events.length)];
 
+      const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
       photos.push({
-        date: new Date(
-          `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-        ),
+        date: dateStr,
         caption: `MSC ${event} ${year}`,
         order: photos.length * 10,
       });
