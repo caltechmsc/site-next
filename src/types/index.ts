@@ -178,8 +178,8 @@ export type MemberFormData = {
   bio?: string;
   orcid?: string;
   categoryId: string;
-  startDate: Date;
-  endDate?: Date | null;
+  startDate: string; // ISO date: "YYYY-MM-DD"
+  endDate?: string | null; // ISO date: "YYYY-MM-DD"
   researchAreaIds?: string[];
 };
 
