@@ -1,5 +1,5 @@
 /**
- * Use Form Action Hook
+ * Form Action Hook
  *
  * A custom hook for handling form submissions with Server Actions.
  * Provides loading state, error handling, and success callbacks.
