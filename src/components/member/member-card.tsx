@@ -9,7 +9,8 @@ import Link from "next/link";
 import Image from "next/image";
 import type { MemberWithCategory } from "@/types";
 import { cn } from "@/lib/utils";
-import { getInitials, formatTenure } from "@/lib/format";
+import { getInitials } from "@/lib/format";
+import { formatTenure } from "@/lib/date";
 
 // ============================================================================
 // Types
