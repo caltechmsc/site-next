@@ -6,6 +6,7 @@
  */
 
 import { prisma } from "@/lib/db/client";
+import { getYear, getCurrentYear } from "@/lib/date";
 import type {
   MemberWithCategory,
   MemberWithRelations,
@@ -122,7 +123,7 @@ export async function getMemberPublicationStats(memberId: string) {
   // Calculate yearly distribution
   const yearlyDistribution = publications.reduce(
     (acc, pub) => {
-      const year = pub.date.getFullYear();
+      const year = getYear(pub.date);
       acc[year] = (acc[year] || 0) + 1;
       return acc;
     },
@@ -133,8 +134,8 @@ export async function getMemberPublicationStats(memberId: string) {
   const years = Object.keys(yearlyDistribution)
     .map(Number)
     .sort((a, b) => a - b);
-  const minYear = years[0] || new Date().getFullYear();
-  const maxYear = years[years.length - 1] || new Date().getFullYear();
+  const minYear = years[0] || getCurrentYear();
+  const maxYear = years[years.length - 1] || getCurrentYear();
 
   return {
     totalPublications: publications.length,
