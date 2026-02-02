@@ -5,6 +5,7 @@
  */
 
 import { prisma } from "@/lib/db/client";
+import { getYear } from "@/lib/date";
 import type { GroupPhoto } from "@/types";
 
 // ============================================================================
@@ -37,7 +38,7 @@ export async function getPhotosGroupedByYear(): Promise<PhotosByYear[]> {
   const photosByYear = new Map<number, GroupPhoto[]>();
 
   for (const photo of photos) {
-    const year = new Date(photo.date).getFullYear();
+    const year = getYear(photo.date);
     if (!photosByYear.has(year)) {
       photosByYear.set(year, []);
     }
@@ -89,8 +90,8 @@ export async function getPhotoStats(): Promise<PhotoStats> {
     return { totalPhotos: 0, yearRange: null };
   }
 
-  const minYear = dateRange._min.date?.getFullYear();
-  const maxYear = dateRange._max.date?.getFullYear();
+  const minYear = dateRange._min.date ? getYear(dateRange._min.date) : null;
+  const maxYear = dateRange._max.date ? getYear(dateRange._max.date) : null;
 
   return {
     totalPhotos,
