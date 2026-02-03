@@ -4,6 +4,7 @@ export {
   SIDEBAR_COLLAPSED_KEY,
 } from "./constants";
 
+export { AuthKeepAlive } from "./auth-keep-alive";
 export { Sidebar } from "./sidebar";
 export { SidebarHeader } from "./sidebar-header";
 export { SidebarNav } from "./sidebar-nav";
