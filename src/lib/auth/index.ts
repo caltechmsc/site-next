@@ -14,7 +14,7 @@ export type {
   RefreshTokenPayload,
   SessionUser,
   AuthResult,
-  AuthCheckResult,
+  AuthStatus,
   GoogleUserInfo,
 } from "./types";
 
@@ -63,6 +63,7 @@ export {
 
 export {
   getCurrentUser,
+  getAuthenticatedUser,
   requireAuth,
   hasRole,
   loginWithPassword,

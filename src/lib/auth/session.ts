@@ -2,30 +2,34 @@
  * Session Management
  *
  * High-level authentication functions.
- *
- * READ-ONLY functions: Safe for Server Components
- * WRITE functions: Route Handlers / Server Actions only
  */
 
 import { prisma } from "@/lib/db/client";
-import { verifyAccessToken, generateTokenPair } from "@/lib/auth/jwt";
+import {
+  verifyAccessToken,
+  verifyRefreshToken,
+  signAccessToken,
+  generateTokenPair,
+} from "@/lib/auth/jwt";
 import {
   getAccessToken,
+  getRefreshToken,
   setAuthCookies,
+  setAccessCookie,
   clearAuthCookies,
 } from "@/lib/auth/cookies";
 import { verifyPassword } from "@/lib/auth/password";
 import type { SessionUser, AuthResult, AdminRole } from "@/lib/auth/types";
 
 // ============================================================================
-// Read-Only Session (Safe for Server Components)
+// Session Retrieval
 // ============================================================================
 
 /**
- * Get current authenticated user.
+ * Get current authenticated user from access token only.
  *
  * READ-ONLY: Safe for Server Components.
- * Assumes middleware has already validated/refreshed the token.
+ * Does NOT refresh tokens.
  */
 export async function getCurrentUser(): Promise<SessionUser | null> {
   const accessToken = await getAccessToken();
@@ -47,10 +51,82 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
 }
 
 /**
+ * Get authenticated user with automatic token refresh.
+ *
+ * USE THIS for Server Actions and API Routes that need authentication.
+ *
+ * Behavior:
+ * 1. If access token is valid → return user immediately
+ * 2. If access token expired but refresh token valid → refresh & return user
+ * 3. If both invalid → clear cookies & return null
+ *
+ * WRITES COOKIES: Only when refreshing, safe in Server Actions/API Routes.
+ */
+export async function getAuthenticatedUser(): Promise<SessionUser | null> {
+  // 1. Fast path: valid access token
+  const accessToken = await getAccessToken();
+  if (accessToken) {
+    const payload = await verifyAccessToken(accessToken);
+    if (payload) {
+      return {
+        id: payload.sub,
+        email: payload.email,
+        name: payload.name,
+        role: payload.role,
+      };
+    }
+  }
+
+  // 2. Access token invalid/expired, try refresh
+  const refreshToken = await getRefreshToken();
+  if (!refreshToken) {
+    return null;
+  }
+
+  const refreshPayload = await verifyRefreshToken(refreshToken);
+  if (!refreshPayload) {
+    // Refresh token also invalid, clear everything
+    await clearAuthCookies();
+    return null;
+  }
+
+  // 3. Refresh token valid, get latest user info from DB
+  const admin = await prisma.admin.findUnique({
+    where: { id: refreshPayload.sub },
+    select: { id: true, email: true, name: true, role: true },
+  });
+
+  if (!admin) {
+    // User no longer exists
+    await clearAuthCookies();
+    return null;
+  }
+
+  // 4. Generate new access token and set cookie
+  const newAccessToken = await signAccessToken({
+    id: admin.id,
+    email: admin.email,
+    name: admin.name,
+    role: admin.role as AdminRole,
+  });
+
+  await setAccessCookie(newAccessToken);
+
+  return {
+    id: admin.id,
+    email: admin.email,
+    name: admin.name,
+    role: admin.role as AdminRole,
+  };
+}
+
+/**
  * Require authenticated user or throw.
+ *
+ * Uses getAuthenticatedUser() internally, so supports auto-refresh.
  */
 export async function requireAuth(): Promise<SessionUser> {
-  const user = await getCurrentUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     throw new Error("Unauthorized");
   }

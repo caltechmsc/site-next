@@ -68,12 +68,11 @@ export type AuthResult =
 // ============================================================================
 
 /**
- * Result of authentication check in middleware.
+ * Authentication status for middleware.
  */
-export type AuthCheckResult =
-  | { status: "authenticated" }
-  | { status: "needs-refresh"; refreshUrl: string }
-  | { status: "unauthenticated"; loginUrl: string };
+export type AuthStatus =
+  | { status: "valid" }
+  | { status: "invalid"; loginUrl: string };
 
 // ============================================================================
 // Google OAuth Types

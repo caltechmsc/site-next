@@ -43,24 +43,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Protected routes: check authentication
+  // Non-protected routes: allow through
   if (!requiresAuth(pathname)) {
     return NextResponse.next();
   }
 
-  // Check auth status
+  // Protected routes: check if user has any valid token
   const result = await checkAuthStatus(request);
 
-  switch (result.status) {
-    case "authenticated":
-      return NextResponse.next();
-
-    case "needs-refresh":
-      return NextResponse.redirect(result.refreshUrl);
-
-    case "unauthenticated":
-      return NextResponse.redirect(result.loginUrl);
+  // Valid access token, allow through
+  if (result.status === "valid") {
+    return NextResponse.next();
   }
+
+  // Both tokens invalid, redirect to login
+  return NextResponse.redirect(result.loginUrl);
 }
 
 // ============================================================================
