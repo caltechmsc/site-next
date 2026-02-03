@@ -1,10 +1,12 @@
 /**
  * Admin Actions Utilities
  *
- * Helper functions for creating type-safe Server Actions.
+ * Helper functions for creating type-safe, authenticated Server Actions.
  */
 
 import { z } from "zod";
+
+import { getAuthenticatedUser } from "@/lib/auth";
 import {
   type ActionResult,
   type FieldErrors,
@@ -14,11 +16,11 @@ import {
 } from "./types";
 
 // ============================================================================
-// Safe Action Creator
+// Authenticated Action Creators
 // ============================================================================
 
 /**
- * Creates a type-safe Server Action with validation and error handling.
+ * Creates a type-safe, authenticated Server Action with validation.
  */
 export function createSafeAction<TInput, TOutput>(
   schema: z.ZodSchema<TInput>,
@@ -26,37 +28,30 @@ export function createSafeAction<TInput, TOutput>(
 ): (input: unknown) => Promise<ActionResult<TOutput>> {
   return async (input: unknown): Promise<ActionResult<TOutput>> => {
     try {
-      // Validate input
-      const parsed = schema.safeParse(input);
+      // 1. Verify authentication (with automatic token refresh)
+      const user = await getAuthenticatedUser();
+      if (!user) {
+        return error("Session expired. Please log in again.");
+      }
 
+      // 2. Validate input
+      const parsed = schema.safeParse(input);
       if (!parsed.success) {
         const fieldErrors = formatZodErrors(parsed.error);
         return validationError("Validation failed", fieldErrors);
       }
 
-      // Execute handler
+      // 3. Execute handler
       const result = await handler(parsed.data);
       return success(result);
     } catch (err) {
-      // Handle known errors
-      if (err instanceof ActionError) {
-        return error(err.message);
-      }
-
-      // Handle Prisma errors
-      if (isPrismaError(err)) {
-        return error(formatPrismaError(err));
-      }
-
-      // Log unknown errors and return generic message
-      console.error("Server action error:", err);
-      return error("An unexpected error occurred");
+      return handleActionError(err);
     }
   };
 }
 
 /**
- * Creates a Server Action without input validation.
+ * Creates an authenticated Server Action without input validation.
  * Use for actions that don't require input (e.g., fetching data).
  */
 export function createAction<TOutput>(
@@ -64,21 +59,65 @@ export function createAction<TOutput>(
 ): () => Promise<ActionResult<TOutput>> {
   return async (): Promise<ActionResult<TOutput>> => {
     try {
+      // Verify authentication (with automatic token refresh)
+      const user = await getAuthenticatedUser();
+      if (!user) {
+        return error("Session expired. Please log in again.");
+      }
+
       const result = await handler();
       return success(result);
     } catch (err) {
-      if (err instanceof ActionError) {
-        return error(err.message);
-      }
-
-      if (isPrismaError(err)) {
-        return error(formatPrismaError(err));
-      }
-
-      console.error("Server action error:", err);
-      return error("An unexpected error occurred");
+      return handleActionError(err);
     }
   };
+}
+
+/**
+ * Creates a type-safe Server Action WITHOUT authentication.
+ * Use only for public actions that don't require login.
+ */
+export function createPublicAction<TInput, TOutput>(
+  schema: z.ZodSchema<TInput>,
+  handler: (data: TInput) => Promise<TOutput>
+): (input: unknown) => Promise<ActionResult<TOutput>> {
+  return async (input: unknown): Promise<ActionResult<TOutput>> => {
+    try {
+      const parsed = schema.safeParse(input);
+      if (!parsed.success) {
+        const fieldErrors = formatZodErrors(parsed.error);
+        return validationError("Validation failed", fieldErrors);
+      }
+
+      const result = await handler(parsed.data);
+      return success(result);
+    } catch (err) {
+      return handleActionError(err);
+    }
+  };
+}
+
+// ============================================================================
+// Error Handling
+// ============================================================================
+
+/**
+ * Unified error handler for all action types.
+ */
+function handleActionError(err: unknown): ActionResult<never> {
+  // Handle known errors
+  if (err instanceof ActionError) {
+    return error(err.message);
+  }
+
+  // Handle Prisma errors
+  if (isPrismaError(err)) {
+    return error(formatPrismaError(err));
+  }
+
+  // Log unknown errors and return generic message
+  console.error("Server action error:", err);
+  return error("An unexpected error occurred");
 }
 
 // ============================================================================

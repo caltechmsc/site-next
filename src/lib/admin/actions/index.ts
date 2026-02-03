@@ -29,6 +29,7 @@ export {
 export {
   createSafeAction,
   createAction,
+  createPublicAction,
   ActionError as ActionErrorClass,
   assertAction,
   ensureExists,
