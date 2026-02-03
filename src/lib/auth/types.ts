@@ -64,17 +64,6 @@ export type AuthResult =
   | { success: false; error: string };
 
 // ============================================================================
-// Middleware Types
-// ============================================================================
-
-/**
- * Authentication status for middleware.
- */
-export type AuthStatus =
-  | { status: "valid" }
-  | { status: "invalid"; loginUrl: string };
-
-// ============================================================================
 // Google OAuth Types
 // ============================================================================
 
