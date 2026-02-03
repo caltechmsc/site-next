@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { getCurrentUser } from "@/lib/auth";
-import { Sidebar, TopBar } from "@/components/admin/layout";
+import { Sidebar, TopBar, AuthKeepAlive } from "@/components/admin/layout";
 
 // ============================================================================
 // Authenticated Admin Layout
@@ -9,7 +9,7 @@ import { Sidebar, TopBar } from "@/components/admin/layout";
 
 /**
  * Layout wrapper for all authenticated admin pages.
- * Includes sidebar and top bar navigation.
+ * Includes sidebar, top bar, and auth keep-alive for session management.
  */
 export default async function AuthenticatedAdminLayout({
   children,
@@ -24,6 +24,8 @@ export default async function AuthenticatedAdminLayout({
 
   return (
     <div className="flex min-h-screen bg-background">
+      <AuthKeepAlive />
+
       <Sidebar user={user} />
 
       <div className="flex flex-1 flex-col">
