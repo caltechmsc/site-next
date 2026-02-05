@@ -136,20 +136,37 @@ export const updateAdmin = createSafeAction(
       throw new ActionError("You can only update your own account");
     }
 
-    if (!isAdmin && data.role) {
-      throw new ActionError("Only administrators can change roles");
-    }
-
-    // Prevent the last admin from being demoted
-    if (data.role && data.role !== "admin") {
-      const adminCount = await prisma.admin.count({
-        where: { role: "admin", id: { not: data.id } },
+    // Check if role change is being attempted
+    if (data.role) {
+      const existing = await prisma.admin.findUnique({
+        where: { id: data.id },
+        select: { role: true },
       });
 
-      if (adminCount === 0) {
-        throw new ActionError(
-          "Cannot change role: at least one administrator must remain"
-        );
+      if (!existing) {
+        throw new ActionError("Administrator not found");
+      }
+
+      const isRoleChanging = data.role !== existing.role;
+
+      if (isRoleChanging) {
+        // Only admins can change roles
+        if (!isAdmin) {
+          throw new ActionError("Only administrators can change roles");
+        }
+
+        // Prevent the last admin from being demoted
+        if (data.role !== "admin") {
+          const adminCount = await prisma.admin.count({
+            where: { role: "admin", id: { not: data.id } },
+          });
+
+          if (adminCount === 0) {
+            throw new ActionError(
+              "Cannot change role: at least one administrator must remain"
+            );
+          }
+        }
       }
     }
 
