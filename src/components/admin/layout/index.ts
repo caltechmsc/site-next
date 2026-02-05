@@ -5,6 +5,7 @@ export {
 } from "./constants";
 
 export { AuthKeepAlive } from "./auth-keep-alive";
+export { PageHeader, type PageHeaderProps } from "./page-header";
 export { Sidebar } from "./sidebar";
 export { SidebarHeader } from "./sidebar-header";
 export { SidebarNav } from "./sidebar-nav";
