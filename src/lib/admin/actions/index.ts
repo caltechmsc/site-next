@@ -90,3 +90,12 @@ export {
   reorderPhotos,
   type PhotoListItem,
 } from "./photos";
+
+export {
+  getAdmins,
+  createAdmin,
+  updateAdmin,
+  deleteAdmin,
+  changePassword,
+  type AdminListItem,
+} from "./admins";
