@@ -8,7 +8,7 @@ import {
 } from "@/lib/db/queries/publications";
 import { createPageMetadata, pageDescriptions } from "@/lib/metadata";
 import { formatCompactNumber } from "@/lib/format";
-import { PublicationList } from "@/components/publication";
+import { PublicationsWithFilters } from "@/components/publication";
 
 // ============================================================================
 // Metadata
@@ -72,7 +72,7 @@ export default async function PublicationsPage() {
 
       {/* Publication List with Filters */}
       {publications.length > 0 ? (
-        <PublicationList
+        <PublicationsWithFilters
           publications={publications}
           filterOptions={filterOptions}
         />
