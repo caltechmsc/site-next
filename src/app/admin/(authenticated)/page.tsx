@@ -1,29 +1,42 @@
-import { redirect } from "next/navigation";
-
-import { getCurrentUser } from "@/lib/auth";
+import { getDashboardStats } from "@/lib/admin/actions";
+import { PublicationChart, RecentActivity, StatsGrid } from "./_components";
 
 // ============================================================================
-// Admin Dashboard
+// Metadata
 // ============================================================================
 
-export default async function AdminDashboardPage() {
-  const user = await getCurrentUser();
+export const metadata = {
+  title: "Dashboard | Admin",
+  description: "Overview of your site content and activity",
+};
 
-  if (!user) {
-    redirect("/admin/login");
+// ============================================================================
+// Page Component
+// ============================================================================
+
+export default async function DashboardPage() {
+  const result = await getDashboardStats();
+
+  if (!result.success) {
+    throw new Error(result.error);
   }
 
+  const { stats, publicationsByYear, recentMembers, recentPublications } =
+    result.data;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold">Welcome, {user.name}!</h1>
-        <p className="mt-2 text-muted-foreground">
-          Admin Dashboard · Coming Soon
-        </p>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Role: <span className="font-medium">{user.role}</span>
-        </p>
-      </div>
+    <div className="space-y-8">
+      {/* Publications Chart */}
+      <PublicationChart data={publicationsByYear} />
+
+      {/* Stats Grid */}
+      <StatsGrid stats={stats} />
+
+      {/* Recent Activity */}
+      <RecentActivity
+        recentMembers={recentMembers}
+        recentPublications={recentPublications}
+      />
     </div>
   );
 }
