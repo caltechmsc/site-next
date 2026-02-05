@@ -6,12 +6,12 @@
  */
 
 import Link from "next/link";
-import Image from "next/image";
 import { FileText, Users, Quote } from "lucide-react";
 
 import type { ResearchAreaStats } from "@/types";
 import { cn } from "@/lib/utils";
-import { formatCompactNumber, getInitials } from "@/lib/format";
+import { formatCompactNumber } from "@/lib/format";
+import { MemberPortrait } from "@/components/ui/member-portrait";
 
 // ============================================================================
 // Types
@@ -107,33 +107,17 @@ export function ResearchCard({
           <div className="mt-3 flex items-center">
             <div className="flex -space-x-2">
               {visibleMembers.map(({ member }) => (
-                <div
+                <MemberPortrait
                   key={member.id}
+                  name={member.name}
+                  photo={member.photo}
+                  size={isChild ? "xs" : "sm"}
+                  variant="circle"
                   className={cn(
-                    "relative rounded-full border-2 border-card bg-muted",
+                    "border-2 border-card",
                     isChild ? "h-6 w-6" : "h-7 w-7"
                   )}
-                  title={member.name}
-                >
-                  {member.photo ? (
-                    <Image
-                      src={member.photo}
-                      alt={member.name}
-                      fill
-                      sizes={isChild ? "24px" : "28px"}
-                      className="rounded-full object-cover"
-                    />
-                  ) : (
-                    <span
-                      className={cn(
-                        "flex h-full w-full items-center justify-center rounded-full bg-muted text-muted-foreground",
-                        isChild ? "text-[9px]" : "text-[10px]"
-                      )}
-                    >
-                      {getInitials(member.name)}
-                    </span>
-                  )}
-                </div>
+                />
               ))}
               {remainingCount > 0 && (
                 <div
