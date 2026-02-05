@@ -1,5 +1,9 @@
-import { MemberListSkeleton } from "@/components/admin";
+import { PageSkeleton, MemberListSkeleton } from "@/components/admin/shared";
 
 export default function MembersLoading() {
-  return <MemberListSkeleton />;
+  return (
+    <PageSkeleton>
+      <MemberListSkeleton />
+    </PageSkeleton>
+  );
 }
