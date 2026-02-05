@@ -14,10 +14,9 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AdminFormDialog } from "./admin-form-dialog";
+import { EditNameDialog } from "./edit-name-dialog";
 import { ChangePasswordDialog } from "./change-password-dialog";
 import { updateAdmin } from "@/lib/admin/actions";
-import type { AdminUpdateInput } from "@/lib/admin/schemas";
 import type { SessionUser } from "@/lib/auth/types";
 
 // ============================================================================
@@ -58,14 +57,14 @@ export function AccountView({ user }: AccountViewProps) {
   // Handlers
   // --------------------------------------------------------------------------
 
-  const handleEditSubmit = React.useCallback(
-    async (values: AdminUpdateInput) => {
+  const handleNameSubmit = React.useCallback(
+    async (name: string) => {
       setIsSubmitting(true);
 
       try {
         const result = await updateAdmin({
           id: user.id,
-          ...values,
+          name,
         });
         if (result.success) {
           toast.success(MESSAGES.update.success);
@@ -86,15 +85,6 @@ export function AccountView({ user }: AccountViewProps) {
   // --------------------------------------------------------------------------
   // Render
   // --------------------------------------------------------------------------
-
-  // Build a minimal AdminListItem for the form dialog
-  const adminItem = {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-    createdAt: new Date(),
-  };
 
   return (
     <>
@@ -154,11 +144,11 @@ export function AccountView({ user }: AccountViewProps) {
       </div>
 
       {/* Edit Name Dialog */}
-      <AdminFormDialog
+      <EditNameDialog
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
-        admin={adminItem}
-        onSubmit={handleEditSubmit}
+        currentName={user.name}
+        onSubmit={handleNameSubmit}
         isSubmitting={isSubmitting}
       />
 
