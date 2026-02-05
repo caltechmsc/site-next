@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Markdown } from "@/components/ui/markdown";
 import { ResearchCard, ResearchMemberList } from "@/components/research";
-import { PublicationsByYear } from "./publications-by-year";
+import { PublicationsByYear } from "@/components/publication";
 
 // ============================================================================
 // Types
