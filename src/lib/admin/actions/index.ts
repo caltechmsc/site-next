@@ -42,3 +42,15 @@ export {
   reorderCategories,
   type CategoryWithCount,
 } from "./categories";
+
+export {
+  getMembers,
+  getMemberById,
+  createMember,
+  updateMember,
+  deleteMember,
+  toggleMemberHidden,
+  reorderMembers,
+  type MemberWithCategory,
+  type MemberListItem,
+} from "./members";
