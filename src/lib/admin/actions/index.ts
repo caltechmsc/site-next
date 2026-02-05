@@ -33,3 +33,12 @@ export {
   assertAction,
   ensureExists,
 } from "./utils";
+
+export {
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+  reorderCategories,
+  type CategoryWithCount,
+} from "./categories";
