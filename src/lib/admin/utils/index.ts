@@ -20,3 +20,5 @@ export {
   calculateMoveOrder,
   reorderByIds,
 } from "./reorder";
+
+export { generateSlug, generateUniqueSlug, isValidSlug } from "./slug";
