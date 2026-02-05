@@ -1,5 +1,9 @@
-import { AdminListSkeleton } from "@/components/admin";
+import { PageSkeleton, AdminListSkeleton } from "@/components/admin/shared";
 
 export default function AdminsLoading() {
-  return <AdminListSkeleton />;
+  return (
+    <PageSkeleton>
+      <AdminListSkeleton />
+    </PageSkeleton>
+  );
 }
