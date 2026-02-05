@@ -87,10 +87,6 @@ interface AdminSeed {
 // Utilities
 // ============================================================================
 
-/** Generate avatar URL from name */
-const avatar = (name: string, size = 256) =>
-  `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=${size}&background=random&color=fff`;
-
 /** Generate random group photo URL using picsum.photos */
 const groupPhoto = (seed: number | string) =>
   `https://picsum.photos/seed/${seed}/1200/800`;
@@ -629,7 +625,7 @@ async function seedMembers(categoryIds: Record<string, string>) {
           name: member.name,
           aliases: member.aliases,
           email: member.email,
-          photo: avatar(member.name),
+          photo: null,
           website: member.website ?? null,
           position: member.position,
           education: member.education,
