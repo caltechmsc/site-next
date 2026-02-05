@@ -8,4 +8,5 @@ export {
   ChangePasswordDialog,
   type ChangePasswordDialogProps,
 } from "./change-password-dialog";
+export { EditNameDialog, type EditNameDialogProps } from "./edit-name-dialog";
 export { AccountView, type AccountViewProps } from "./account-view";
