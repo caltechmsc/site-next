@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Mail,
@@ -19,11 +20,10 @@ import {
   getAllMemberIds,
 } from "@/lib/db/queries/members";
 import { createMemberMetadata, createNotFoundMetadata } from "@/lib/metadata";
-import { formatCompactNumber } from "@/lib/format";
+import { getInitials, formatCompactNumber } from "@/lib/format";
 import { getYear, formatTenure } from "@/lib/date";
 import { PublicationTimeline } from "@/components/member";
 import { PublicationsByYear } from "@/components/publication";
-import { UnifiedAvatar } from "@/components/ui/unified-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -101,14 +101,24 @@ export default async function MemberDetailPage({ params }: PageProps) {
       {/* Profile Header */}
       <header className="flex flex-col gap-6 sm:flex-row sm:items-start">
         {/* Photo */}
-        <UnifiedAvatar
-          photo={member.photo}
-          name={member.name}
-          variant="portrait"
-          size="detail"
-          priority
-          className="h-40 w-32 shrink-0 sm:h-48 sm:w-36"
-        />
+        <div className="relative h-40 w-32 shrink-0 overflow-hidden rounded-lg bg-muted sm:h-48 sm:w-36">
+          {member.photo ? (
+            <Image
+              src={member.photo}
+              alt={member.name}
+              fill
+              priority
+              sizes="144px"
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <span className="text-4xl font-light text-muted-foreground/50">
+                {getInitials(member.name)}
+              </span>
+            </div>
+          )}
+        </div>
 
         {/* Info */}
         <div className="flex-1 space-y-3">
