@@ -21,4 +21,8 @@ export {
   reorderByIds,
 } from "./reorder";
 
+// ============================================================================
+// Slug Utilities
+// ============================================================================
+
 export { generateSlug, generateUniqueSlug, isValidSlug } from "./slug";
