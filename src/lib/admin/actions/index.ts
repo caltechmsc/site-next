@@ -65,3 +65,19 @@ export {
   reorderCollaborators,
   type CollaboratorListItem,
 } from "./collaborators";
+
+export {
+  getResearchAreasTree,
+  getParentOptions,
+  getResearchAreaById,
+  createResearchArea,
+  updateResearchArea,
+  deleteResearchArea,
+  toggleResearchAreaHidden,
+  reorderResearchAreas,
+  type ResearchAreaStats,
+  type ResearchAreaListItem,
+  type ResearchAreaWithChildren,
+  type ResearchAreaFull,
+  type ParentOption,
+} from "./research-areas";
