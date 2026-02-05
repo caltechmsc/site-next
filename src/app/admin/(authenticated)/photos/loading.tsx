@@ -1,5 +1,9 @@
-import { PhotoGridSkeleton } from "@/components/admin";
+import { PageSkeleton, PhotoGridSkeleton } from "@/components/admin/shared";
 
 export default function PhotosLoading() {
-  return <PhotoGridSkeleton />;
+  return (
+    <PageSkeleton>
+      <PhotoGridSkeleton />
+    </PageSkeleton>
+  );
 }
