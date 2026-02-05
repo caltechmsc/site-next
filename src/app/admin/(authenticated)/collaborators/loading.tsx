@@ -1,5 +1,12 @@
-import { CollaboratorListSkeleton } from "@/components/admin";
+import {
+  PageSkeleton,
+  CollaboratorListSkeleton,
+} from "@/components/admin/shared";
 
 export default function CollaboratorsLoading() {
-  return <CollaboratorListSkeleton />;
+  return (
+    <PageSkeleton>
+      <CollaboratorListSkeleton />
+    </PageSkeleton>
+  );
 }
