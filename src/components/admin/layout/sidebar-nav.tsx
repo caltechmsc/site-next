@@ -9,6 +9,7 @@ import {
   Handshake,
   Camera,
   ShieldCheck,
+  UserCog,
   type LucideIcon,
 } from "lucide-react";
 
@@ -83,7 +84,13 @@ const navGroups: NavGroup[] = [
         label: "Administrators",
         href: "/admin/admins",
         icon: ShieldCheck,
-        roles: ["admin"], // Only admin can access
+        roles: ["admin"], // Full management view
+      },
+      {
+        label: "My Account",
+        href: "/admin/admins",
+        icon: UserCog,
+        roles: ["editor"], // Personal account settings
       },
     ],
   },
@@ -185,7 +192,7 @@ function NavGroupComponent({
       <nav className="space-y-0.5">
         {visibleItems.map((item) => (
           <NavLink
-            key={item.href}
+            key={item.label}
             item={item}
             active={isActive(item.href, pathname)}
             collapsed={collapsed}
