@@ -80,6 +80,8 @@ export function CategoryList({
 }: CategoryListProps) {
   const router = useRouter();
 
+  const dndContextId = React.useId();
+
   // Local state for optimistic updates
   const [categories, setCategories] = React.useState(initialCategories);
 
@@ -297,6 +299,7 @@ export function CategoryList({
 
       {/* Sortable List */}
       <DndContext
+        id={dndContextId}
         sensors={sensors}
         collisionDetection={closestCenter}
         modifiers={[restrictToVerticalAxis]}
