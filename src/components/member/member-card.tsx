@@ -6,11 +6,10 @@
  */
 
 import Link from "next/link";
-import Image from "next/image";
 import type { MemberWithCategory } from "@/types";
 import { cn } from "@/lib/utils";
-import { getInitials } from "@/lib/format";
 import { formatTenure } from "@/lib/date";
+import { MemberPortrait } from "@/components/ui/member-portrait";
 
 // ============================================================================
 // Types
@@ -40,21 +39,14 @@ export function MemberCard({ member, className }: MemberCardProps) {
     >
       {/* Photo Container */}
       <div className="relative aspect-[3/4] overflow-hidden bg-muted">
-        {member.photo ? (
-          <Image
-            src={member.photo}
-            alt={member.name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <span className="text-4xl font-light text-muted-foreground/50">
-              {getInitials(member.name)}
-            </span>
-          </div>
-        )}
+        <MemberPortrait
+          name={member.name}
+          photo={member.photo}
+          size="fill"
+          variant="portrait"
+          hoverScale
+          className="rounded-none"
+        />
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent" />
