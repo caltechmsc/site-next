@@ -373,6 +373,7 @@ export function MemberFormDialog({
                           <Select
                             onValueChange={field.onChange}
                             value={field.value}
+                            key={`category-select-${member?.id ?? "new"}`}
                           >
                             <FormControl>
                               <SelectTrigger>
