@@ -99,3 +99,11 @@ export {
   changePassword,
   type AdminListItem,
 } from "./admins";
+
+export {
+  getDashboardStats,
+  type DashboardData,
+  type PublicationByYear,
+  type RecentMember,
+  type RecentPublication,
+} from "./dashboard";
