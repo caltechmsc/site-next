@@ -81,3 +81,12 @@ export {
   type ResearchAreaFull,
   type ParentOption,
 } from "./research-areas";
+
+export {
+  getPhotos,
+  createPhoto,
+  updatePhoto,
+  deletePhoto,
+  reorderPhotos,
+  type PhotoListItem,
+} from "./photos";
