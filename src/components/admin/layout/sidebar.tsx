@@ -53,7 +53,7 @@ export function Sidebar({ user }: SidebarProps) {
   if (!mounted) {
     return (
       <aside
-        className="hidden lg:flex lg:flex-col lg:border-r lg:bg-card"
+        className="hidden shrink-0 lg:flex lg:flex-col lg:border-r lg:bg-card"
         style={{ width: SIDEBAR_WIDTH }}
       />
     );
@@ -62,7 +62,7 @@ export function Sidebar({ user }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "hidden lg:flex lg:flex-col lg:border-r lg:bg-card",
+        "hidden shrink-0 overflow-y-auto lg:flex lg:flex-col lg:border-r lg:bg-card",
         "transition-[width] duration-200 ease-in-out"
       )}
       style={{ width: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH }}
