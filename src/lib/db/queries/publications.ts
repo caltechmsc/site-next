@@ -79,13 +79,13 @@ export async function getAllPublicationIndices(): Promise<number[]> {
 // ============================================================================
 
 /**
- * Get a single publication by DOI with full relations.
+ * Get a single publication by index with full relations.
  */
-export async function getPublicationByDoi(
-  doi: string
+export async function getPublicationByIndex(
+  index: number
 ): Promise<PublicationDetail | null> {
   return prisma.publication.findUnique({
-    where: { doi },
+    where: { index },
     include: {
       members: {
         include: {
