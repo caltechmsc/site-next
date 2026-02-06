@@ -6,7 +6,7 @@
 // Types
 // ============================================================================
 
-/** Publication metadata returned by any DOI API. */
+/** Publication metadata returned by any DOI API */
 export interface PublicationMetadata {
   title: string;
   authors: string[];
@@ -22,7 +22,7 @@ export interface PublicationMetadata {
 // Constants
 // ============================================================================
 
-/** Request timeout for DOI API calls (10 seconds). */
+/** Request timeout for DOI API calls (10 seconds) */
 export const REQUEST_TIMEOUT = 10_000;
 
 /**
