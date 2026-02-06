@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, BookOpen, Users, FlaskConical, Quote } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
@@ -82,12 +83,15 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="relative border-b">
         {/* Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${siteConfig.images.heroBackground})`,
-          }}
-        >
+        <div className="absolute inset-0">
+          <Image
+            src={siteConfig.images.heroBackground}
+            alt="MSC group photo"
+            fill
+            className="object-cover"
+            priority
+            quality={85}
+          />
           <div className="dark:from-background/98 absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60 dark:via-background/90 dark:to-background/70" />
         </div>
 
