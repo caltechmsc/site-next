@@ -5,6 +5,7 @@
  * Tries OpenAlex first, falls back to Crossref.
  */
 
+import { type PublicationMetadata, normalizeDoi } from "./shared";
 import { fetchFromOpenAlex } from "./openalex";
 import { fetchFromCrossref } from "./crossref";
 
@@ -12,15 +13,7 @@ import { fetchFromCrossref } from "./crossref";
 // Types
 // ============================================================================
 
-export interface DoiLookupResult {
-  title: string;
-  authors: string[];
-  abstract: string | null;
-  date: string; // ISO date: "YYYY-MM-DD"
-  journal: string | null;
-  volume: string | null;
-  issue: string | null;
-  pages: string | null;
+export interface DoiLookupResult extends PublicationMetadata {
   /** Which API returned the result */
   source: "openalex" | "crossref";
 }
@@ -31,24 +24,21 @@ export interface DoiLookupResult {
 
 /**
  * Look up publication metadata by DOI.
+ *
+ * Tries OpenAlex first (faster, open), then falls back to Crossref.
  */
 export async function lookupDoi(doi: string): Promise<DoiLookupResult | null> {
-  // Normalize DOI
-  const normalizedDoi = doi
-    .trim()
-    .replace(/^https?:\/\/doi\.org\//, "")
-    .replace(/^doi:/, "");
-
-  if (!normalizedDoi) return null;
+  const normalized = normalizeDoi(doi);
+  if (!normalized) return null;
 
   // Try OpenAlex first
-  const openAlexResult = await fetchFromOpenAlex(normalizedDoi);
+  const openAlexResult = await fetchFromOpenAlex(normalized);
   if (openAlexResult) {
     return { ...openAlexResult, source: "openalex" };
   }
 
   // Fall back to Crossref
-  const crossrefResult = await fetchFromCrossref(normalizedDoi);
+  const crossrefResult = await fetchFromCrossref(normalized);
   if (crossrefResult) {
     return { ...crossrefResult, source: "crossref" };
   }
