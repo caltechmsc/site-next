@@ -2,9 +2,6 @@
  * Session Management
  *
  * High-level authentication functions.
- *
- * READ-ONLY functions: Safe for Server Components
- * WRITE functions: Route Handlers / Server Actions only
  */
 
 import { prisma } from "@/lib/db/client";
@@ -18,14 +15,14 @@ import { verifyPassword } from "@/lib/auth/password";
 import type { SessionUser, AuthResult, AdminRole } from "@/lib/auth/types";
 
 // ============================================================================
-// Read-Only Session (Safe for Server Components)
+// Session Retrieval
 // ============================================================================
 
 /**
- * Get current authenticated user.
+ * Get current authenticated user from access token only.
  *
  * READ-ONLY: Safe for Server Components.
- * Assumes middleware has already validated/refreshed the token.
+ * Does NOT refresh tokens.
  */
 export async function getCurrentUser(): Promise<SessionUser | null> {
   const accessToken = await getAccessToken();
@@ -44,17 +41,6 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
     name: payload.name,
     role: payload.role,
   };
-}
-
-/**
- * Require authenticated user or throw.
- */
-export async function requireAuth(): Promise<SessionUser> {
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error("Unauthorized");
-  }
-  return user;
 }
 
 /**

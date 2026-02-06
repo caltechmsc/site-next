@@ -2,7 +2,7 @@
  * Publication Timeline Component
  *
  * Visual representation of publication activity over years.
- * Supports collapsible view for long time ranges.
+ * Displays a bar chart showing publication counts per year.
  */
 
 "use client";
@@ -17,6 +17,12 @@ import { cn } from "@/lib/utils";
 
 /** Default number of years to show before collapsing */
 const DEFAULT_VISIBLE_YEARS = 20;
+
+/** Height of the chart area in pixels */
+const CHART_HEIGHT = 64;
+
+/** Minimum bar height (in pixels) for years with publications */
+const MIN_BAR_HEIGHT = 4;
 
 // ============================================================================
 // Types
@@ -65,6 +71,7 @@ export function PublicationTimeline({
 
   return (
     <div className="space-y-2">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-muted-foreground">
           Publication Timeline
@@ -90,15 +97,15 @@ export function PublicationTimeline({
       </div>
 
       {/* Timeline Bars */}
-      <div className="flex h-16 items-end gap-1">
-        {/* Collapsed indicator */}
+      <div className="flex items-end gap-0.5" style={{ height: CHART_HEIGHT }}>
+        {/* Collapsed Indicator */}
         {needsCollapse && !isExpanded && (
           <button
             onClick={() => setIsExpanded(true)}
-            className="group flex h-full items-center px-1"
+            className="group flex h-full shrink-0 items-end px-1"
             title={`Show ${hiddenYearsCount} earlier years`}
           >
-            <div className="flex h-full flex-col items-center justify-end gap-0.5">
+            <div className="flex flex-col items-center gap-0.5 pb-1">
               <span className="text-[10px] text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
                 +{hiddenYearsCount}
               </span>
@@ -116,32 +123,37 @@ export function PublicationTimeline({
 
         {visibleYears.map((year) => {
           const count = yearlyDistribution[year] || 0;
-          const heightPercent = (count / maxCount) * 100;
+          const barHeight =
+            count > 0
+              ? Math.max(
+                  Math.round((count / maxCount) * CHART_HEIGHT),
+                  MIN_BAR_HEIGHT
+                )
+              : 2;
 
           return (
             <div
               key={year}
-              className="group relative flex flex-1 flex-col items-center"
+              className="group relative flex flex-1 items-end justify-center"
+              style={{ height: CHART_HEIGHT }}
             >
               {/* Bar */}
               <div
                 className={cn(
-                  "w-full rounded-t transition-colors",
+                  "w-full min-w-[3px] rounded-t transition-colors",
                   count > 0
                     ? "bg-primary hover:bg-primary/80"
-                    : "bg-primary/20 hover:bg-primary/30"
+                    : "bg-muted-foreground/20 hover:bg-muted-foreground/30"
                 )}
-                style={{ height: `${Math.max(heightPercent, 4)}%` }}
+                style={{ height: barHeight }}
               />
 
               {/* Tooltip */}
-              {count > 0 && (
-                <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100">
-                  <div className="whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-xs font-medium text-background">
-                    {year}: {count}
-                  </div>
+              <div className="pointer-events-none absolute -top-8 left-1/2 z-10 -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="whitespace-nowrap rounded bg-popover px-2 py-1 text-xs font-medium text-popover-foreground shadow-md ring-1 ring-border">
+                  {year}: {count} paper{count !== 1 ? "s" : ""}
                 </div>
-              )}
+              </div>
             </div>
           );
         })}

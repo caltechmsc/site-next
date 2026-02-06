@@ -6,6 +6,7 @@
  */
 
 import { prisma } from "@/lib/db/client";
+import { getYear, getCurrentYear, startOfYear, endOfYear } from "@/lib/date";
 import type {
   PublicationListItem,
   PublicationDetail,
@@ -124,9 +125,13 @@ export async function getPublicationStats(): Promise<PublicationStats> {
     }),
   ]);
 
-  const currentYear = new Date().getFullYear();
-  const minYear = dateRange._min.date?.getFullYear() ?? currentYear;
-  const maxYear = dateRange._max.date?.getFullYear() ?? currentYear;
+  const currentYear = getCurrentYear();
+  const minYear = dateRange._min.date
+    ? getYear(dateRange._min.date)
+    : currentYear;
+  const maxYear = dateRange._max.date
+    ? getYear(dateRange._max.date)
+    : currentYear;
 
   return {
     totalPublications: countResult,
@@ -166,7 +171,7 @@ export async function getFilterOptions(): Promise<FilterOptions> {
   // Extract unique years
   const yearsSet = new Set<number>();
   for (const pub of yearsResult) {
-    yearsSet.add(new Date(pub.date).getFullYear());
+    yearsSet.add(getYear(pub.date));
   }
   const years = Array.from(yearsSet).sort((a, b) => b - a);
 
@@ -196,11 +201,11 @@ function buildWhereClause(filters?: PublicationFilters) {
 
   // Year filter
   if (filters.year) {
-    const startOfYear = new Date(filters.year, 0, 1);
-    const endOfYear = new Date(filters.year, 11, 31, 23, 59, 59);
+    const yearStart = startOfYear(filters.year);
+    const yearEnd = endOfYear(filters.year);
     where.date = {
-      gte: startOfYear,
-      lte: endOfYear,
+      gte: yearStart,
+      lte: yearEnd,
     };
   }
 

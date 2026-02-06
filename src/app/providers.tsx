@@ -9,6 +9,8 @@
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
+import { Toaster } from "@/components/ui/sonner";
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -33,6 +35,7 @@ export function Providers({ children }: ProvidersProps) {
       disableTransitionOnChange
     >
       {children}
+      <Toaster />
     </NextThemesProvider>
   );
 }

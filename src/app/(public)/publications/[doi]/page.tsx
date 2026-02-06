@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import {
   ArrowLeft,
   Calendar,
@@ -20,8 +19,10 @@ import {
   createPublicationMetadata,
   createNotFoundMetadata,
 } from "@/lib/metadata";
-import { parseAuthors, getInitials, formatCompactNumber } from "@/lib/format";
+import { parseAuthors, formatCompactNumber } from "@/lib/format";
+import { getYear } from "@/lib/date";
 import { siteConfig } from "@/config/site";
+import { MemberPortrait } from "@/components/ui/member-portrait";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -82,7 +83,7 @@ export default async function PublicationDetailPage({ params }: PageProps) {
   }
 
   const authors = parseAuthors(publication.authors);
-  const year = new Date(publication.date).getFullYear();
+  const year = getYear(publication.date);
   const hasMembers = publication.members.length > 0;
   const hasAreas = publication.researchAreas.length > 0;
 
@@ -182,21 +183,12 @@ export default async function PublicationDetailPage({ params }: PageProps) {
                   href={`/members/${member.id}`}
                   className="group flex items-center gap-2 rounded-lg border bg-card p-2 pr-4 transition-colors hover:border-primary/50"
                 >
-                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-muted">
-                    {member.photo ? (
-                      <Image
-                        src={member.photo}
-                        alt={member.name}
-                        fill
-                        sizes="40px"
-                        className="object-cover"
-                      />
-                    ) : (
-                      <span className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
-                        {getInitials(member.name)}
-                      </span>
-                    )}
-                  </div>
+                  <MemberPortrait
+                    name={member.name}
+                    photo={member.photo}
+                    size="md"
+                    variant="circle"
+                  />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium transition-colors group-hover:text-primary">
                       {member.name}

@@ -14,7 +14,6 @@ export type {
   RefreshTokenPayload,
   SessionUser,
   AuthResult,
-  AuthCheckResult,
   GoogleUserInfo,
 } from "./types";
 
@@ -63,7 +62,6 @@ export {
 
 export {
   getCurrentUser,
-  requireAuth,
   hasRole,
   loginWithPassword,
   loginWithGoogle,
@@ -96,4 +94,9 @@ export {
 // Middleware
 // ============================================================================
 
-export { checkAuthStatus, requiresAuth, isPublicApiRoute } from "./middleware";
+export {
+  isAuthenticated,
+  buildLoginUrl,
+  requiresAuth,
+  isPublicApiRoute,
+} from "./middleware";

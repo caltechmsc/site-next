@@ -13,6 +13,7 @@ import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 import type { GroupPhoto } from "@/types";
 import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/date";
 
 // ============================================================================
 // Types
@@ -42,12 +43,7 @@ export function PhotoLightbox({
   const hasNext = currentIndex < photos.length - 1;
 
   // Format date
-  const date = new Date(photo.date);
-  const formattedDate = date.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  const formattedDate = formatDate(photo.date, "long");
 
   // Keyboard navigation
   const handleKeyDown = useCallback(

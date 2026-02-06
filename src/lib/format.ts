@@ -22,22 +22,6 @@ export function getInitials(name: string): string {
 }
 
 // ============================================================================
-// Date & Time Formatting
-// ============================================================================
-
-/**
- * Format a date range as a tenure string.
- */
-export function formatTenure(startDate: Date, endDate: Date | null): string {
-  const startYear = new Date(startDate).getFullYear();
-  if (!endDate) {
-    return `${startYear} - Present`;
-  }
-  const endYear = new Date(endDate).getFullYear();
-  return startYear === endYear ? `${startYear}` : `${startYear} - ${endYear}`;
-}
-
-// ============================================================================
 // Number Formatting
 // ============================================================================
 

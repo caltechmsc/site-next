@@ -1,72 +1,78 @@
 /**
- * GET /api/auth/refresh
+ * POST /api/auth/refresh
  *
  * Refresh access token using refresh token.
- * Called by middleware when access token expires.
  */
 
 import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/db/client";
+import { verifyRefreshToken, signAccessToken } from "@/lib/auth/jwt";
 import {
-  verifyRefreshToken,
-  signAccessToken,
-  getRefreshToken,
-  setAccessCookie,
-  clearAuthCookies,
-  sanitizeRedirectUrl,
-  type AdminRole,
-} from "@/lib/auth";
+  ACCESS_TOKEN,
+  REFRESH_TOKEN,
+  COOKIE_OPTIONS,
+} from "@/lib/auth/constants";
+import type { AdminRole } from "@/lib/auth/types";
 
 // ============================================================================
 // Handler
 // ============================================================================
 
-export async function GET(request: NextRequest) {
-  const redirectTo = sanitizeRedirectUrl(
-    request.nextUrl.searchParams.get("redirect"),
-    "/admin"
-  );
-
+export async function POST(request: NextRequest) {
   try {
-    // 1. Get and verify refresh token
-    const refreshToken = await getRefreshToken();
+    // Get refresh token from cookie
+    const refreshToken = request.cookies.get(REFRESH_TOKEN.name)?.value;
+
     if (!refreshToken) {
-      return redirectToLogin(request, redirectTo, "session_expired");
+      return createErrorResponse("No refresh token", 401);
     }
 
+    // Verify refresh token
     const payload = await verifyRefreshToken(refreshToken);
+
     if (!payload) {
-      await clearAuthCookies();
-      return redirectToLogin(request, redirectTo, "session_expired");
+      return createErrorResponse("Invalid or expired refresh token", 401, true);
     }
 
-    // 2. Verify user exists and get latest info from DB
+    // Get user from database
     const admin = await prisma.admin.findUnique({
       where: { id: payload.sub },
       select: { id: true, email: true, name: true, role: true },
     });
 
     if (!admin) {
-      await clearAuthCookies();
-      return redirectToLogin(request, redirectTo, "account_deleted");
+      return createErrorResponse("Account not found", 401, true);
     }
 
-    // 3. Generate new access token with latest user info
-    const newAccessToken = await signAccessToken({
+    // Generate new access token
+    const accessToken = await signAccessToken({
       id: admin.id,
       email: admin.email,
       name: admin.name,
       role: admin.role as AdminRole,
     });
 
-    // 4. Set cookie and redirect back
-    await setAccessCookie(newAccessToken);
+    // Set new access token cookie and return success
+    const response = NextResponse.json({
+      success: true,
+      user: {
+        id: admin.id,
+        email: admin.email,
+        name: admin.name,
+        role: admin.role,
+      },
+    });
 
-    return NextResponse.redirect(new URL(redirectTo, request.url));
+    response.cookies.set(ACCESS_TOKEN.name, accessToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: ACCESS_TOKEN.maxAge,
+    });
+
+    return response;
   } catch (error) {
-    console.error("Refresh error:", error);
-    return redirectToLogin(request, redirectTo, "refresh_failed");
+    console.error("Token refresh error:", error);
+    return createErrorResponse("An unexpected error occurred", 500);
   }
 }
 
@@ -74,15 +80,23 @@ export async function GET(request: NextRequest) {
 // Helpers
 // ============================================================================
 
-function redirectToLogin(
-  request: NextRequest,
-  originalRedirect: string,
-  errorCode: string
+/**
+ * Create error response, optionally clearing auth cookies.
+ */
+function createErrorResponse(
+  message: string,
+  status: number,
+  clearCookies = false
 ): NextResponse {
-  const loginUrl = new URL("/admin/login", request.url);
-  loginUrl.searchParams.set("error", errorCode);
-  if (originalRedirect !== "/admin/login") {
-    loginUrl.searchParams.set("redirect", originalRedirect);
+  const response = NextResponse.json(
+    { success: false, error: message },
+    { status }
+  );
+
+  if (clearCookies) {
+    response.cookies.delete(ACCESS_TOKEN.name);
+    response.cookies.delete(REFRESH_TOKEN.name);
   }
-  return NextResponse.redirect(loginUrl);
+
+  return response;
 }

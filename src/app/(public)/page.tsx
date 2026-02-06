@@ -5,6 +5,7 @@ import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/db/client";
 import { formatCompactNumber, parseAuthors } from "@/lib/format";
+import { getYear } from "@/lib/date";
 
 // ============================================================================
 // Page Configuration
@@ -226,13 +227,13 @@ interface PublicationRowProps {
     doi: string;
     title: string;
     authors: string;
-    date: Date;
+    date: string; // ISO date string: YYYY-MM-DD
     journal: string | null;
   };
 }
 
 function PublicationRow({ publication }: PublicationRowProps) {
-  const year = publication.date.getFullYear();
+  const year = getYear(publication.date);
   const authors = parseAuthors(publication.authors);
   const displayAuthors =
     authors.length > 3

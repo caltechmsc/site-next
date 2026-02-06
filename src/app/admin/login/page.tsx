@@ -33,12 +33,63 @@ const ERROR_MESSAGES: Record<string, string> = {
 };
 
 // ============================================================================
+// Auto Refresh Component
+// ============================================================================
+
+function AutoRefresh({
+  redirectTo,
+  onComplete,
+}: {
+  redirectTo: string;
+  onComplete: (success: boolean) => void;
+}) {
+  const router = useRouter();
+
+  React.useEffect(() => {
+    const attemptRefresh = async () => {
+      try {
+        const response = await fetch("/api/auth/refresh", {
+          method: "POST",
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          // Refresh successful - redirect to target
+          router.push(redirectTo);
+          router.refresh();
+        } else {
+          // Refresh failed - show login form
+          await response.json();
+          onComplete(false);
+        }
+      } catch (error) {
+        // Network error - show login form
+        onComplete(false);
+      }
+    };
+
+    attemptRefresh();
+  }, [redirectTo, router, onComplete]);
+
+  return (
+    <div className="flex flex-col items-center justify-center py-12">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <p className="mt-4 text-sm text-white/60">Verifying session...</p>
+    </div>
+  );
+}
+
+// ============================================================================
 // Login Form
 // ============================================================================
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
+
+  // Auto-refresh state
+  const [isAutoRefreshing, setIsAutoRefreshing] = React.useState(!!redirectTo);
 
   // Form state
   const [email, setEmail] = React.useState("");
@@ -51,8 +102,27 @@ function LoginForm() {
     const errorCode = searchParams.get("error");
     if (errorCode && ERROR_MESSAGES[errorCode]) {
       setError(ERROR_MESSAGES[errorCode]);
+      // Don't auto-refresh if there's an error
+      setIsAutoRefreshing(false);
     }
   }, [searchParams]);
+
+  // Handle auto-refresh completion
+  const handleAutoRefreshComplete = React.useCallback((success: boolean) => {
+    if (!success) {
+      setIsAutoRefreshing(false);
+    }
+  }, []);
+
+  // If auto-refreshing, show loading state
+  if (isAutoRefreshing) {
+    return (
+      <AutoRefresh
+        redirectTo={redirectTo || "/admin"}
+        onComplete={handleAutoRefreshComplete}
+      />
+    );
+  }
 
   // Handle password login
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,8 +145,7 @@ function LoginForm() {
       }
 
       // Success - redirect to target URL or admin dashboard
-      const redirectTo = searchParams.get("redirect") || "/admin";
-      router.push(redirectTo);
+      router.push(redirectTo || "/admin");
       router.refresh();
     } catch {
       setError("An unexpected error occurred");
@@ -87,8 +156,8 @@ function LoginForm() {
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    const redirectTo = searchParams.get("redirect") || "/admin";
-    window.location.href = `/api/auth/google?redirect=${encodeURIComponent(redirectTo)}`;
+    const target = redirectTo || "/admin";
+    window.location.href = `/api/auth/google?redirect=${encodeURIComponent(target)}`;
   };
 
   return (

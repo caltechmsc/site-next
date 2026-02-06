@@ -13,6 +13,7 @@ import { Quote, ExternalLink } from "lucide-react";
 import type { Publication, Member, ResearchArea } from "@/types";
 import { cn } from "@/lib/utils";
 import { parseAuthors, joinAuthors, formatCompactNumber } from "@/lib/format";
+import { getYear } from "@/lib/date";
 import { Badge } from "@/components/ui/badge";
 
 // ============================================================================
@@ -45,7 +46,7 @@ export function PublicationCard({
 }: PublicationCardProps) {
   const router = useRouter();
   const authors = parseAuthors(publication.authors);
-  const year = new Date(publication.date).getFullYear();
+  const year = getYear(publication.date);
   const detailUrl = `/publications/${encodeURIComponent(publication.doi)}`;
   const doiUrl = `https://doi.org/${publication.doi}`;
 

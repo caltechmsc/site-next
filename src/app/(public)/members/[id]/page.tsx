@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import {
   Mail,
@@ -20,9 +19,11 @@ import {
   getAllMemberIds,
 } from "@/lib/db/queries/members";
 import { createMemberMetadata, createNotFoundMetadata } from "@/lib/metadata";
-import { getInitials, formatTenure, formatCompactNumber } from "@/lib/format";
+import { formatCompactNumber } from "@/lib/format";
+import { getYear, formatTenure } from "@/lib/date";
 import { PublicationTimeline } from "@/components/member";
-import { PublicationCard } from "@/components/publication";
+import { PublicationsByYear } from "@/components/publication";
+import { MemberPortrait } from "@/components/ui/member-portrait";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -87,9 +88,6 @@ export default async function MemberDetailPage({ params }: PageProps) {
   const tenure = formatTenure(member.startDate, member.endDate);
   const isActive = !member.endDate;
 
-  // Group publications by year
-  const publicationsByYear = groupPublicationsByYear(publications);
-
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
       {/* Back Link */}
@@ -103,24 +101,14 @@ export default async function MemberDetailPage({ params }: PageProps) {
       {/* Profile Header */}
       <header className="flex flex-col gap-6 sm:flex-row sm:items-start">
         {/* Photo */}
-        <div className="relative h-40 w-32 shrink-0 overflow-hidden rounded-lg bg-muted sm:h-48 sm:w-36">
-          {member.photo ? (
-            <Image
-              src={member.photo}
-              alt={member.name}
-              fill
-              priority
-              sizes="144px"
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center">
-              <span className="text-4xl font-light text-muted-foreground/50">
-                {getInitials(member.name)}
-              </span>
-            </div>
-          )}
-        </div>
+        <MemberPortrait
+          name={member.name}
+          photo={member.photo}
+          size="lg"
+          variant="portrait"
+          priority
+          className="h-40 w-32 sm:h-48 sm:w-36"
+        />
 
         {/* Info */}
         <div className="flex-1 space-y-3">
@@ -272,54 +260,9 @@ export default async function MemberDetailPage({ params }: PageProps) {
       {publications.length > 0 && (
         <section className="space-y-6">
           <h2 className="text-lg font-semibold">Publications</h2>
-
-          <div className="space-y-8">
-            {Object.entries(publicationsByYear)
-              .sort(([a], [b]) => Number(b) - Number(a))
-              .map(([year, pubs]) => (
-                <div key={year}>
-                  {/* Year Header */}
-                  <div className="mb-3 flex items-center gap-3">
-                    <span className="text-sm font-medium text-muted-foreground">
-                      {year}
-                    </span>
-                    <div className="h-px flex-1 bg-border" />
-                    <span className="text-xs text-muted-foreground">
-                      {pubs.length} paper{pubs.length !== 1 ? "s" : ""}
-                    </span>
-                  </div>
-
-                  {/* Publication List */}
-                  <div className="space-y-3">
-                    {pubs.map((pub) => (
-                      <PublicationCard key={pub.doi} publication={pub} />
-                    ))}
-                  </div>
-                </div>
-              ))}
-          </div>
+          <PublicationsByYear publications={publications} />
         </section>
       )}
     </div>
-  );
-}
-
-// ============================================================================
-// Utilities
-// ============================================================================
-
-function groupPublicationsByYear(
-  publications: Awaited<ReturnType<typeof getMemberPublications>>
-): Record<string, typeof publications> {
-  return publications.reduce(
-    (acc, pub) => {
-      const year = new Date(pub.date).getFullYear().toString();
-      if (!acc[year]) {
-        acc[year] = [];
-      }
-      acc[year].push(pub);
-      return acc;
-    },
-    {} as Record<string, typeof publications>
   );
 }

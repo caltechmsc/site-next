@@ -78,16 +78,6 @@ export const mainNav: NavItem[] = [
   },
 ] as const;
 
-export const adminNav: NavItem[] = [
-  { title: "Dashboard", href: "/admin" },
-  { title: "Publications", href: "/admin/publications" },
-  { title: "Members", href: "/admin/members" },
-  { title: "Research", href: "/admin/research" },
-  { title: "Collaborators", href: "/admin/collaborators" },
-  { title: "Photos", href: "/admin/photos" },
-  { title: "Settings", href: "/admin/settings" },
-] as const;
-
 // ============================================================================
 // Feature Flags
 // ============================================================================
