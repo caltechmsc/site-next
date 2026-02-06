@@ -154,6 +154,50 @@ export const collaboratorSchema = z.object({
 export type CollaboratorInput = z.infer<typeof collaboratorSchema>;
 
 // ============================================================================
+// Publication Schemas
+// ============================================================================
+
+const doiString = z
+  .string()
+  .trim()
+  .min(1, "DOI is required")
+  .transform((val) =>
+    val.replace(/^https?:\/\/doi\.org\//, "").replace(/^doi:/, "")
+  );
+
+const optionalDoi = z
+  .string()
+  .trim()
+  .optional()
+  .nullable()
+  .transform((val) => {
+    if (!val || val === "") return null;
+    return val.replace(/^https?:\/\/doi\.org\//, "").replace(/^doi:/, "");
+  });
+
+export const publicationSchema = z.object({
+  title: nonEmptyString,
+  authors: z
+    .array(z.string().trim().min(1))
+    .min(1, "At least one author is required"),
+  doi: optionalDoi,
+  abstract: optionalString,
+  date: dateString,
+  journal: optionalString,
+  volume: optionalString,
+  issue: optionalString,
+  pages: optionalString,
+});
+
+export type PublicationInput = z.infer<typeof publicationSchema>;
+
+export const doiLookupSchema = z.object({
+  doi: doiString,
+});
+
+export type DoiLookupInput = z.infer<typeof doiLookupSchema>;
+
+// ============================================================================
 // Group Photo Schemas
 // ============================================================================
 
@@ -248,6 +292,8 @@ export const schemas = {
   category: categorySchema,
   researchArea: researchAreaSchema,
   collaborator: collaboratorSchema,
+  publication: publicationSchema,
+  doiLookup: doiLookupSchema,
   photo: photoSchema,
   photoUpload: photoUploadSchema,
   adminCreate: adminCreateSchema,
