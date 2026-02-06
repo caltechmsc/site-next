@@ -50,6 +50,7 @@ export function StatsGrid({ stats }: StatsGridProps) {
           value={stats.publications.total}
           description={`${stats.publications.totalCitations.toLocaleString()} total citations`}
           icon={FileText}
+          href="/admin/publications"
         />
         <StatCard
           title="Research Areas"

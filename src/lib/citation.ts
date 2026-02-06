@@ -12,7 +12,7 @@ import { getYear } from "@/lib/date";
 // ============================================================================
 
 export interface CitationData {
-  doi: string;
+  doi: string | null;
   title: string;
   authors: string[];
   date: string; // ISO date string: YYYY-MM-DD
@@ -96,7 +96,9 @@ function formatAPA(data: CitationData): string {
     parts.push(journalPart);
   }
 
-  parts.push(`https://doi.org/${data.doi}`);
+  if (data.doi) {
+    parts.push(`https://doi.org/${data.doi}`);
+  }
 
   return parts.join(" ");
 }
@@ -140,7 +142,9 @@ function formatMLA(data: CitationData): string {
     parts.push(journalPart);
   }
 
-  parts.push(`https://doi.org/${data.doi}`);
+  if (data.doi) {
+    parts.push(`https://doi.org/${data.doi}`);
+  }
 
   return parts.join(" ");
 }
@@ -168,29 +172,21 @@ function formatBibTeX(data: CitationData): string {
     })
     .join(" and ");
 
-  const lines: string[] = [];
-  lines.push(`@article{${citationKey},`);
-  lines.push(`  author = {${formattedAuthors}},`);
-  lines.push(`  title = {${data.title}},`);
+  // Collect fields, then join with commas (no trailing comma on last field)
+  const fields: string[] = [
+    `  author = {${formattedAuthors}}`,
+    `  title = {${data.title}}`,
+  ];
 
-  if (data.journal) {
-    lines.push(`  journal = {${data.journal}},`);
-  }
-  if (data.volume) {
-    lines.push(`  volume = {${data.volume}},`);
-  }
-  if (data.issue) {
-    lines.push(`  number = {${data.issue}},`);
-  }
-  if (data.pages) {
-    lines.push(`  pages = {${data.pages}},`);
-  }
+  if (data.journal) fields.push(`  journal = {${data.journal}}`);
+  if (data.volume) fields.push(`  volume = {${data.volume}}`);
+  if (data.issue) fields.push(`  number = {${data.issue}}`);
+  if (data.pages) fields.push(`  pages = {${data.pages}}`);
 
-  lines.push(`  year = {${year}},`);
-  lines.push(`  doi = {${data.doi}}`);
-  lines.push("}");
+  fields.push(`  year = {${year}}`);
+  if (data.doi) fields.push(`  doi = {${data.doi}}`);
 
-  return lines.join("\n");
+  return [`@article{${citationKey},`, fields.join(",\n"), "}"].join("\n");
 }
 
 // ============================================================================

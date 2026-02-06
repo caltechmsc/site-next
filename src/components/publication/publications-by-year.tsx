@@ -181,7 +181,7 @@ export function PublicationsByYear({
             <div className="space-y-3">
               {visiblePubs.map((publication) => (
                 <PublicationCard
-                  key={publication.doi}
+                  key={publication.id}
                   publication={publication}
                   showAreas={showAreas}
                 />

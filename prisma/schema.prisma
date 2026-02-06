@@ -72,7 +72,9 @@ model MemberCategory {
 // ============================================================================
 
 model Publication {
-  doi String @id
+  id    String  @id @default(cuid())
+  index Int     @unique
+  doi   String? @unique
 
   // Basic Info
   title    String
@@ -99,6 +101,7 @@ model Publication {
   members       MemberPublication[]
   researchAreas PublicationResearchArea[]
 
+  @@index([index])
   @@index([date])
   @@index([citations])
 }
@@ -205,13 +208,13 @@ model Admin {
 // ============================================================================
 
 model MemberPublication {
-  member         Member      @relation(fields: [memberId], references: [id], onDelete: Cascade)
-  memberId       String
-  publication    Publication @relation(fields: [publicationDoi], references: [doi], onDelete: Cascade)
-  publicationDoi String
+  member        Member      @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId      String
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  publicationId String
 
-  @@id([memberId, publicationDoi])
-  @@index([publicationDoi])
+  @@id([memberId, publicationId])
+  @@index([publicationId])
 }
 
 model MemberResearchArea {
@@ -225,11 +228,11 @@ model MemberResearchArea {
 }
 
 model PublicationResearchArea {
-  publication    Publication  @relation(fields: [publicationDoi], references: [doi], onDelete: Cascade)
-  publicationDoi String
+  publication    Publication  @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  publicationId  String
   researchArea   ResearchArea @relation(fields: [researchAreaId], references: [id], onDelete: Cascade)
   researchAreaId String
 
-  @@id([publicationDoi, researchAreaId])
+  @@id([publicationId, researchAreaId])
   @@index([researchAreaId])
 }

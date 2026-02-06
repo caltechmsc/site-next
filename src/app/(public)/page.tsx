@@ -53,6 +53,7 @@ async function getRecentPublications() {
       orderBy: { date: "desc" },
       take: 5,
       select: {
+        index: true,
         doi: true,
         title: true,
         authors: true,
@@ -162,7 +163,7 @@ export default async function HomePage() {
 
           <div className="mt-6 space-y-4">
             {recentPublications.map((pub) => (
-              <PublicationRow key={pub.doi} publication={pub} />
+              <PublicationRow key={pub.index} publication={pub} />
             ))}
           </div>
         </div>
@@ -224,7 +225,8 @@ function StatCard({ href, value, label, icon: Icon }: StatCardProps) {
 
 interface PublicationRowProps {
   publication: {
-    doi: string;
+    index: number;
+    doi: string | null;
     title: string;
     authors: string;
     date: string; // ISO date string: YYYY-MM-DD
@@ -242,7 +244,7 @@ function PublicationRow({ publication }: PublicationRowProps) {
 
   return (
     <Link
-      href={`/publications/${encodeURIComponent(publication.doi)}`}
+      href={`/publications/${publication.index}`}
       className="group block rounded-lg border bg-card p-4 transition-colors hover:border-primary/50 hover:bg-accent/50"
     >
       <p className="font-medium leading-snug group-hover:text-primary">

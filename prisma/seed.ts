@@ -696,10 +696,12 @@ async function seedPublications(
 ) {
   console.log("📄 Seeding publications...");
 
-  for (const pub of PUBLICATIONS) {
-    // Create publication
-    await prisma.publication.create({
+  for (let i = 0; i < PUBLICATIONS.length; i++) {
+    const pub = PUBLICATIONS[i];
+
+    const createdPub = await prisma.publication.create({
       data: {
+        index: PUBLICATIONS.length - i,
         doi: pub.doi,
         title: pub.title,
         authors: pub.authors,
@@ -719,7 +721,7 @@ async function seedPublications(
       if (areaIds[areaSlug]) {
         await prisma.publicationResearchArea.create({
           data: {
-            publicationDoi: pub.doi,
+            publicationId: createdPub.id,
             researchAreaId: areaIds[areaSlug],
           },
         });
@@ -732,7 +734,7 @@ async function seedPublications(
         await prisma.memberPublication.create({
           data: {
             memberId: memberIds[memberName],
-            publicationDoi: pub.doi,
+            publicationId: createdPub.id,
           },
         });
       }

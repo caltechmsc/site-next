@@ -65,14 +65,13 @@ export async function getPublications(
 }
 
 /**
- * Get all publications for static page generation.
- * Lighter query without relations.
+ * Get all publication indices for static page generation.
  */
-export async function getAllPublicationDois(): Promise<string[]> {
+export async function getAllPublicationIndices(): Promise<number[]> {
   const publications = await prisma.publication.findMany({
-    select: { doi: true },
+    select: { index: true },
   });
-  return publications.map((p) => p.doi);
+  return publications.map((p) => p.index);
 }
 
 // ============================================================================
@@ -80,13 +79,13 @@ export async function getAllPublicationDois(): Promise<string[]> {
 // ============================================================================
 
 /**
- * Get a single publication by DOI with full relations.
+ * Get a single publication by index with full relations.
  */
-export async function getPublicationByDoi(
-  doi: string
+export async function getPublicationByIndex(
+  index: number
 ): Promise<PublicationDetail | null> {
   return prisma.publication.findUnique({
-    where: { doi },
+    where: { index },
     include: {
       members: {
         include: {

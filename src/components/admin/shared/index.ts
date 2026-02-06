@@ -20,6 +20,8 @@ export {
 
 export { MarkdownEditor, type MarkdownEditorProps } from "./markdown-editor";
 
+export { TagInput, type TagInputProps } from "./tag-input";
+
 export {
   SortableList,
   SortableItemWrapper,
@@ -38,6 +40,7 @@ export {
   // Page-specific
   DashboardSkeleton,
   MemberListSkeleton,
+  PublicationListSkeleton,
   ResearchTreeSkeleton,
   PhotoGridSkeleton,
   CollaboratorListSkeleton,

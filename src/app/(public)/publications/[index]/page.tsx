@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 
 import {
-  getPublicationByDoi,
-  getAllPublicationDois,
+  getPublicationByIndex,
+  getAllPublicationIndices,
 } from "@/lib/db/queries/publications";
 import {
   createPublicationMetadata,
@@ -33,7 +33,7 @@ import { CitationBox } from "@/components/publication";
 // ============================================================================
 
 interface PageProps {
-  params: Promise<{ doi: string }>;
+  params: Promise<{ index: string }>;
 }
 
 // ============================================================================
@@ -43,9 +43,11 @@ interface PageProps {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { doi } = await params;
-  const decodedDoi = decodeURIComponent(doi);
-  const publication = await getPublicationByDoi(decodedDoi);
+  const { index } = await params;
+  const pubIndex = parseInt(index, 10);
+  if (isNaN(pubIndex)) return createNotFoundMetadata("Publication");
+
+  const publication = await getPublicationByIndex(pubIndex);
 
   if (!publication) {
     return createNotFoundMetadata("Publication");
@@ -59,8 +61,8 @@ export async function generateMetadata({
 // ============================================================================
 
 export async function generateStaticParams() {
-  const dois = await getAllPublicationDois();
-  return dois.map((doi) => ({ doi: encodeURIComponent(doi) }));
+  const indices = await getAllPublicationIndices();
+  return indices.map((index) => ({ index: index.toString() }));
 }
 
 // ============================================================================
@@ -74,9 +76,14 @@ export const revalidate = 300; // Revalidate every 5 minutes
 // ============================================================================
 
 export default async function PublicationDetailPage({ params }: PageProps) {
-  const { doi } = await params;
-  const decodedDoi = decodeURIComponent(doi);
-  const publication = await getPublicationByDoi(decodedDoi);
+  const { index } = await params;
+  const pubIndex = parseInt(index, 10);
+
+  if (isNaN(pubIndex)) {
+    notFound();
+  }
+
+  const publication = await getPublicationByIndex(pubIndex);
 
   if (!publication) {
     notFound();
@@ -144,17 +151,19 @@ export default async function PublicationDetailPage({ params }: PageProps) {
           </div>
 
           {/* DOI Badge */}
-          <div className="flex items-center gap-2">
-            <a
-              href={`https://doi.org/${publication.doi}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
-            >
-              DOI: {publication.doi}
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          </div>
+          {publication.doi && (
+            <div className="flex items-center gap-2">
+              <a
+                href={`https://doi.org/${publication.doi}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
+              >
+                DOI: {publication.doi}
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            </div>
+          )}
         </header>
 
         <Separator className="my-8" />
@@ -273,12 +282,14 @@ export default async function PublicationDetailPage({ params }: PageProps) {
             ...(publication.abstract && {
               description: publication.abstract,
             }),
-            identifier: {
-              "@type": "PropertyValue",
-              propertyID: "DOI",
-              value: publication.doi,
-            },
-            url: `https://doi.org/${publication.doi}`,
+            ...(publication.doi && {
+              identifier: {
+                "@type": "PropertyValue",
+                propertyID: "DOI",
+                value: publication.doi,
+              },
+              url: `https://doi.org/${publication.doi}`,
+            }),
           }),
         }}
       />

@@ -107,6 +107,22 @@ export interface ResearchAreaFormData {
 }
 
 // ----------------------------------------------------------------------------
+// Publication
+// ----------------------------------------------------------------------------
+
+export interface PublicationFormData {
+  title: string;
+  authors: string[];
+  doi?: string | null;
+  abstract?: string | null;
+  date: string; // YYYY-MM-DD
+  journal?: string | null;
+  volume?: string | null;
+  issue?: string | null;
+  pages?: string | null;
+}
+
+// ----------------------------------------------------------------------------
 // Collaborator
 // ----------------------------------------------------------------------------
 
