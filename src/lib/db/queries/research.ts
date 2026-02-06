@@ -79,7 +79,7 @@ async function calculateStatsBatch(
 
 /**
  * Calculate aggregated stats for a parent including all children.
- * Uses publication DOIs for proper deduplication.
+ * Uses publication IDs for proper deduplication.
  */
 async function calculateStatsWithChildren(
   researchAreaId: string,
@@ -97,17 +97,17 @@ async function calculateStatsWithChildren(
     prisma.publicationResearchArea.findMany({
       where: { researchAreaId: { in: allIds } },
       select: {
-        publicationDoi: true,
+        publicationId: true,
         publication: { select: { citations: true } },
       },
     }),
   ]);
 
-  // Deduplicate by publication DOI (a publication might be in parent and child)
+  // Deduplicate by publication ID (a publication might be in parent and child)
   const uniquePublications = new Map<string, number>();
-  for (const { publicationDoi, publication } of citations) {
-    if (!uniquePublications.has(publicationDoi)) {
-      uniquePublications.set(publicationDoi, publication.citations);
+  for (const { publicationId, publication } of citations) {
+    if (!uniquePublications.has(publicationId)) {
+      uniquePublications.set(publicationId, publication.citations);
     }
   }
   const totalCitations = Array.from(uniquePublications.values()).reduce(
