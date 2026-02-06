@@ -20,6 +20,8 @@ export {
 
 export { MarkdownEditor, type MarkdownEditorProps } from "./markdown-editor";
 
+export { TagInput, type TagInputProps } from "./tag-input";
+
 export {
   SortableList,
   SortableItemWrapper,
