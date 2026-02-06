@@ -12,7 +12,7 @@ import { getYear } from "@/lib/date";
 // ============================================================================
 
 export interface CitationData {
-  doi: string;
+  doi: string | null;
   title: string;
   authors: string[];
   date: string; // ISO date string: YYYY-MM-DD
@@ -96,7 +96,9 @@ function formatAPA(data: CitationData): string {
     parts.push(journalPart);
   }
 
-  parts.push(`https://doi.org/${data.doi}`);
+  if (data.doi) {
+    parts.push(`https://doi.org/${data.doi}`);
+  }
 
   return parts.join(" ");
 }
@@ -140,7 +142,9 @@ function formatMLA(data: CitationData): string {
     parts.push(journalPart);
   }
 
-  parts.push(`https://doi.org/${data.doi}`);
+  if (data.doi) {
+    parts.push(`https://doi.org/${data.doi}`);
+  }
 
   return parts.join(" ");
 }
@@ -187,7 +191,9 @@ function formatBibTeX(data: CitationData): string {
   }
 
   lines.push(`  year = {${year}},`);
-  lines.push(`  doi = {${data.doi}}`);
+  if (data.doi) {
+    lines.push(`  doi = {${data.doi}}`);
+  }
   lines.push("}");
 
   return lines.join("\n");
