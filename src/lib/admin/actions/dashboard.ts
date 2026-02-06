@@ -29,7 +29,9 @@ export interface RecentMember {
 }
 
 export interface RecentPublication {
-  doi: string;
+  id: string;
+  index: number;
+  doi: string | null;
   title: string;
   authors: string;
   journal: string | null;
@@ -130,6 +132,8 @@ export const getDashboardStats = createAction(
         take: RECENT_ITEMS_LIMIT,
         orderBy: { date: "desc" },
         select: {
+          id: true,
+          index: true,
           doi: true,
           title: true,
           authors: true,
@@ -171,6 +175,8 @@ export const getDashboardStats = createAction(
 
     const recentPublications: RecentPublication[] = recentPublicationsRaw.map(
       (p) => ({
+        id: p.id,
+        index: p.index,
         doi: p.doi,
         title: p.title,
         authors: p.authors,
