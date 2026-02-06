@@ -8,6 +8,7 @@ export type {
   CategoryFormData,
   ResearchAreaFormData,
   CollaboratorFormData,
+  PublicationFormData,
   PhotoFormData,
   PhotoUploadData,
   AdminRole,
@@ -90,6 +91,20 @@ export {
   reorderPhotos,
   type PhotoListItem,
 } from "./photos";
+
+export {
+  getPublications,
+  getPublicationById,
+  createPublication,
+  updatePublication,
+  deletePublication,
+  reorderPublications,
+  lookupPublicationDoi,
+  getDistinctJournals,
+  getDistinctAuthors,
+  type PublicationListItem as AdminPublicationListItem,
+  type PublicationFull,
+} from "./publications";
 
 export {
   getAdmins,
