@@ -47,8 +47,8 @@ export function PublicationCard({
   const router = useRouter();
   const authors = parseAuthors(publication.authors);
   const year = getYear(publication.date);
-  const detailUrl = `/publications/${encodeURIComponent(publication.doi)}`;
-  const doiUrl = `https://doi.org/${publication.doi}`;
+  const detailUrl = `/publications/${publication.index}`;
+  const doiUrl = publication.doi ? `https://doi.org/${publication.doi}` : null;
 
   const handleCardClick = () => {
     router.push(detailUrl);
@@ -56,7 +56,9 @@ export function PublicationCard({
 
   const handleDoiClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.open(doiUrl, "_blank", "noopener,noreferrer");
+    if (doiUrl) {
+      window.open(doiUrl, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
@@ -82,7 +84,11 @@ export function PublicationCard({
 
       {/* Meta row */}
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+        {/* Index */}
+        <span className="font-medium tabular-nums">#{publication.index}</span>
+
         {/* Year */}
+        <span className="text-border">·</span>
         <span className="font-medium tabular-nums">{year}</span>
 
         {/* Journal */}
@@ -108,13 +114,15 @@ export function PublicationCard({
         )}
 
         {/* DOI link */}
-        <button
-          onClick={handleDoiClick}
-          className="ml-auto flex items-center gap-1 text-primary/70 transition-colors hover:text-primary"
-        >
-          <span className="hidden sm:inline">DOI</span>
-          <ExternalLink className="h-3 w-3" />
-        </button>
+        {doiUrl && (
+          <button
+            onClick={handleDoiClick}
+            className="ml-auto flex items-center gap-1 text-primary/70 transition-colors hover:text-primary"
+          >
+            <span className="hidden sm:inline">DOI</span>
+            <ExternalLink className="h-3 w-3" />
+          </button>
+        )}
       </div>
 
       {/* Research areas */}
