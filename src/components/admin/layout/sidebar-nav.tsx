@@ -8,6 +8,7 @@ import {
   Users,
   Handshake,
   Camera,
+  FileText,
   ShieldCheck,
   UserCog,
   type LucideIcon,
@@ -59,6 +60,11 @@ const navGroups: NavGroup[] = [
         label: "Research",
         href: "/admin/research",
         icon: FlaskConical,
+      },
+      {
+        label: "Publications",
+        href: "/admin/publications",
+        icon: FileText,
       },
       {
         label: "Members",
