@@ -38,6 +38,7 @@ export {
   // Page-specific
   DashboardSkeleton,
   MemberListSkeleton,
+  PublicationListSkeleton,
   ResearchTreeSkeleton,
   PhotoGridSkeleton,
   CollaboratorListSkeleton,
