@@ -110,7 +110,8 @@ export function createResearchAreaMetadata(area: {
  * Generate metadata for publication detail pages.
  */
 export function createPublicationMetadata(publication: {
-  doi: string;
+  index: number;
+  doi?: string | null;
   title: string;
   authors: string;
   abstract?: string | null;
@@ -125,7 +126,7 @@ export function createPublicationMetadata(publication: {
   return createPageMetadata({
     title: publication.title,
     description,
-    path: `/publications/${encodeURIComponent(publication.doi)}`,
+    path: `/publications/${publication.index}`,
   });
 }
 
