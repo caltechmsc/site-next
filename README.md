@@ -69,24 +69,26 @@ npm start
 
 ### Public Site
 
-- Server-rendered pages with ISR (5-minute revalidation)
-- Dynamic sitemap + robots.txt
-- SEO metadata with Open Graph / Twitter cards
-- Dark mode
-- Responsive design
-- Interactive collaborator map (Leaflet)
-- Publication filtering by year, journal, research area, member
-- Citation export (APA, MLA, Chicago, BibTeX)
+- Server-rendered with ISR (5-min revalidation), dynamic sitemap, robots.txt
+- SEO metadata (Open Graph / Twitter cards) on all pages
+- Dark mode, responsive design
+- Publication filtering (year, journal, research area, member) and citation export (APA, MLA, BibTeX)
+- Hierarchical research area browser with aggregated stats
+- Interactive collaborator world map (Leaflet)
+- Photo gallery with lightbox, grouped by year
+- Embedded Google Calendar
 
 ### Admin Panel
 
-- JWT auth with access/refresh tokens (HttpOnly cookies)
-- Google OAuth + password login
-- Full CRUD for all entities via Server Actions
-- Drag-and-drop ordering (dnd-kit)
-- Image upload with crop + compression (Sharp)
-- DOI-based publication sync (CrossRef + OpenAlex)
-- Automatic member–publication matching via name aliases
+- **Auth**: JWT access/refresh tokens (HttpOnly cookies), Google OAuth + password login, role-based access (admin / editor)
+- **Content**: Full CRUD for members, publications, research areas, collaborators, group photos, member categories, and admin accounts
+- **Ordering**: Drag-and-drop sort (dnd-kit) for members, categories, research areas, collaborators, photos
+- **Images**: Upload with crop + server-side compression (Sharp)
+- **Publication sync** (manual, from `/admin/sync`):
+  - DOI lookup via OpenAlex → CrossRef fallback (fetches title, authors, abstract, journal, etc.)
+  - Bulk metadata sync: updates citation counts, topics/keywords from OpenAlex
+  - Relationship rebuild: atomically re-derives all member↔publication, publication↔area, and member↔area links using ORCID matching, name alias matching, fuzzy first-initial matching, and keyword intersection
+  - Real-time progress streaming (SSE)
 - Dashboard with aggregate stats (Recharts)
 - Markdown editor for research area content
 
