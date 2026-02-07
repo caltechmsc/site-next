@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Home, Search, BookOpen, Users, FlaskConical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { createNotFoundMetadata } from "@/lib/metadata";
+
+// ============================================================================
+// Metadata
+// ============================================================================
+
+export const metadata: Metadata = createNotFoundMetadata();
 
 // ============================================================================
 // 404 Page
