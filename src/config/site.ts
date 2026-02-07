@@ -1,7 +1,7 @@
 /**
  * Site Configuration
  *
- * Centralized configuration for site metadata, navigation, and features.
+ * Centralized configuration for site metadata and navigation.
  * All values are type-safe with `as const`.
  */
 
@@ -79,23 +79,10 @@ export const mainNav: NavItem[] = [
 ] as const;
 
 // ============================================================================
-// Feature Flags
-// ============================================================================
-
-export const features = {
-  /** Enable dark mode toggle */
-  darkMode: true,
-
-  /** Items per page for paginated lists */
-  itemsPerPage: 20,
-} as const;
-
-// ============================================================================
 // SEO Defaults
 // ============================================================================
 
 export const seoDefaults = {
-  titleTemplate: `%s | ${siteConfig.name}`,
   defaultTitle: `${siteConfig.name} - ${siteConfig.fullName}`,
   openGraph: {
     type: "website",

@@ -3,10 +3,4 @@
  */
 
 export { env, type Env } from "./env";
-export {
-  siteConfig,
-  mainNav,
-  features,
-  seoDefaults,
-  type NavItem,
-} from "./site";
+export { siteConfig, mainNav, type NavItem } from "./site";
