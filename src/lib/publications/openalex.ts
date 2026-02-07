@@ -8,9 +8,11 @@ import { env } from "@/config/env";
 
 import {
   type PublicationMetadata,
+  type SyncMetadata,
   normalizeDoi,
   POLITE_HEADERS,
   REQUEST_TIMEOUT,
+  MIN_KEYWORD_SCORE,
 } from "./shared";
 
 // ============================================================================
@@ -23,8 +25,9 @@ interface OpenAlexWork {
   doi: string | null;
   title: string;
   publication_date: string | null;
+  cited_by_count: number;
   authorships: {
-    author: { display_name: string };
+    author: { display_name: string; orcid: string | null };
     author_position: string;
   }[];
   primary_location: {
@@ -37,6 +40,7 @@ interface OpenAlexWork {
     last_page: string | null;
   };
   abstract_inverted_index: Record<string, number[]> | null;
+  keywords: { display_name: string; score: number }[];
 }
 
 // ============================================================================
@@ -54,19 +58,8 @@ export async function fetchFromOpenAlex(
   doi: string
 ): Promise<PublicationMetadata | null> {
   try {
-    const url = buildUrl(doi);
-    const response = await fetch(url, {
-      headers: POLITE_HEADERS,
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT),
-    });
-
-    if (!response.ok) {
-      if (response.status === 404) return null;
-      console.error(`OpenAlex API error: ${response.status}`);
-      return null;
-    }
-
-    const work: OpenAlexWork = await response.json();
+    const work = await fetchWork(doi);
+    if (!work) return null;
     return parseWork(work);
   } catch (error) {
     console.error("OpenAlex fetch failed:", error);
@@ -74,9 +67,42 @@ export async function fetchFromOpenAlex(
   }
 }
 
+/**
+ * Fetch dynamic sync data from OpenAlex by DOI.
+ */
+export async function fetchSyncFromOpenAlex(
+  doi: string
+): Promise<SyncMetadata | null> {
+  try {
+    const work = await fetchWork(doi);
+    if (!work) return null;
+    return parseSyncData(work);
+  } catch (error) {
+    console.error("OpenAlex sync fetch failed:", error);
+    return null;
+  }
+}
+
 // ============================================================================
 // Internal Helpers
 // ============================================================================
+
+/** Fetch raw Work object from OpenAlex API */
+async function fetchWork(doi: string): Promise<OpenAlexWork | null> {
+  const url = buildUrl(doi);
+  const response = await fetch(url, {
+    headers: POLITE_HEADERS,
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT),
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) return null;
+    console.error(`OpenAlex API error: ${response.status}`);
+    return null;
+  }
+
+  return response.json();
+}
 
 /** Build the API URL for a DOI lookup */
 function buildUrl(doi: string): string {
@@ -142,4 +168,31 @@ function formatPages(
   if (!firstPage) return null;
   if (!lastPage || firstPage === lastPage) return firstPage;
   return `${firstPage}-${lastPage}`;
+}
+
+/** Parse sync-relevant data from an OpenAlex Work */
+function parseSyncData(work: OpenAlexWork): SyncMetadata {
+  const keywords = work.keywords
+    .filter((kw) => kw.score >= MIN_KEYWORD_SCORE)
+    .map((kw) => kw.display_name);
+
+  const authors = work.authorships.map((a) => ({
+    name: a.author.display_name,
+    orcid: normalizeOrcid(a.author.orcid),
+  }));
+
+  return {
+    citations: work.cited_by_count,
+    keywords,
+    authors,
+  };
+}
+
+/**
+ * Normalize ORCID to bare format (0000-0000-0000-0000).
+ * OpenAlex returns full URL: https://orcid.org/0000-...
+ */
+function normalizeOrcid(orcid: string | null): string | null {
+  if (!orcid) return null;
+  return orcid.replace(/^https?:\/\/orcid\.org\//, "");
 }
