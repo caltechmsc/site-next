@@ -587,7 +587,7 @@ const GROUP_PHOTOS: GroupPhotoSeed[] = (() => {
 })();
 
 const DEFAULT_ADMIN: AdminSeed = {
-  email: "admin@msc.caltech.edu",
+  email: "admin@example.com",
   name: "Admin",
   password: "admin", // Will be hashed
   role: "admin",
