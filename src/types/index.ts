@@ -105,35 +105,6 @@ export type ResearchAreaDetail = ResearchArea & {
 };
 
 // ============================================================================
-// API Response Types
-// ============================================================================
-
-/** Standard API success response */
-export type ApiSuccess<T> = {
-  success: true;
-  data: T;
-};
-
-/** Standard API error response */
-export type ApiError = {
-  success: false;
-  error: string;
-  code?: string;
-};
-
-/** Combined API response type */
-export type ApiResponse<T> = ApiSuccess<T> | ApiError;
-
-/** Paginated response wrapper */
-export type PaginatedResponse<T> = {
-  items: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-};
-
-// ============================================================================
 // Filter & Sort Types
 // ============================================================================
 
@@ -145,69 +116,6 @@ export type PublicationFilters = {
   memberId?: string;
   search?: string;
 };
-
-/** Member list filters */
-export type MemberFilters = {
-  categoryId?: string;
-  isActive?: boolean;
-  search?: string;
-};
-
-/** Sort direction */
-export type SortDirection = "asc" | "desc";
-
-/** Publication sort options */
-export type PublicationSortField = "date" | "citations" | "title";
-
-/** Member sort options */
-export type MemberSortField = "name" | "startDate" | "order";
-
-// ============================================================================
-// Form & Input Types
-// ============================================================================
-
-/** Member form data (for create/edit) */
-export type MemberFormData = {
-  name: string;
-  aliases?: string[];
-  email?: string;
-  photo?: string;
-  website?: string;
-  position?: string;
-  education?: string;
-  bio?: string;
-  orcid?: string;
-  categoryId: string;
-  startDate: string; // ISO date: "YYYY-MM-DD"
-  endDate?: string | null; // ISO date: "YYYY-MM-DD"
-  researchAreaIds?: string[];
-};
-
-/** Research area form data */
-export type ResearchAreaFormData = {
-  slug: string;
-  title: string;
-  keywords?: string[];
-  content?: string;
-  parentId?: string | null;
-};
-
-// ============================================================================
-// Utility Types
-// ============================================================================
-
-/** Make specific fields optional */
-export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-
-/** Make specific fields required */
-export type RequiredBy<T, K extends keyof T> = Omit<T, K> &
-  Required<Pick<T, K>>;
-
-/** Extract array element type */
-export type ArrayElement<T> = T extends (infer U)[] ? U : never;
-
-/** Nullable type helper */
-export type Nullable<T> = T | null;
 
 // ============================================================================
 // Re-exports (for convenience)
