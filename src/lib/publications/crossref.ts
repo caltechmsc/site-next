@@ -31,6 +31,7 @@ interface CrossrefWork {
   volume?: string;
   issue?: string;
   page?: string;
+  "is-referenced-by-count"?: number;
 }
 
 /** Top-level Crossref API response envelope */
@@ -54,22 +55,27 @@ export async function fetchFromCrossref(
   doi: string
 ): Promise<PublicationMetadata | null> {
   try {
-    const url = buildUrl(doi);
-    const response = await fetch(url, {
-      headers: POLITE_HEADERS,
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT),
-    });
-
-    if (!response.ok) {
-      if (response.status === 404) return null;
-      console.error(`Crossref API error: ${response.status}`);
-      return null;
-    }
-
-    const data: CrossrefResponse = await response.json();
-    return parseWork(data.message);
+    const work = await fetchWork(doi);
+    if (!work) return null;
+    return parseWork(work);
   } catch (error) {
     console.error("Crossref fetch failed:", error);
+    return null;
+  }
+}
+
+/**
+ * Fetch citation count from Crossref by DOI.
+ */
+export async function fetchCitationsFromCrossref(
+  doi: string
+): Promise<number | null> {
+  try {
+    const work = await fetchWork(doi);
+    if (!work) return null;
+    return work["is-referenced-by-count"] ?? null;
+  } catch (error) {
+    console.error("Crossref citation fetch failed:", error);
     return null;
   }
 }
@@ -77,6 +83,24 @@ export async function fetchFromCrossref(
 // ============================================================================
 // Internal Helpers
 // ============================================================================
+
+/** Fetch raw Work message from Crossref API */
+async function fetchWork(doi: string): Promise<CrossrefWork | null> {
+  const url = buildUrl(doi);
+  const response = await fetch(url, {
+    headers: POLITE_HEADERS,
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT),
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) return null;
+    console.error(`Crossref API error: ${response.status}`);
+    return null;
+  }
+
+  const data: CrossrefResponse = await response.json();
+  return data.message;
+}
 
 /** Build the API URL for a DOI lookup */
 function buildUrl(doi: string): string {

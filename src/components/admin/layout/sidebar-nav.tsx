@@ -9,6 +9,7 @@ import {
   Handshake,
   Camera,
   FileText,
+  RefreshCw,
   ShieldCheck,
   UserCog,
   type LucideIcon,
@@ -80,6 +81,16 @@ const navGroups: NavGroup[] = [
         label: "Photos",
         href: "/admin/photos",
         icon: Camera,
+      },
+    ],
+  },
+  {
+    label: "Tools",
+    items: [
+      {
+        label: "Data Sync",
+        href: "/admin/sync",
+        icon: RefreshCw,
       },
     ],
   },
