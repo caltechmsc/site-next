@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -16,6 +17,15 @@ import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/db/client";
 import { formatCompactNumber, parseAuthors } from "@/lib/format";
 import { getYear } from "@/lib/date";
+import { createPageMetadata } from "@/lib/metadata";
+
+// ============================================================================
+// Metadata
+// ============================================================================
+
+export const metadata: Metadata = createPageMetadata({
+  path: "/",
+});
 
 // ============================================================================
 // Page Configuration
