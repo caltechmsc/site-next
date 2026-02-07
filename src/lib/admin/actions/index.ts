@@ -122,3 +122,5 @@ export {
   type RecentMember,
   type RecentPublication,
 } from "./dashboard";
+
+export { getSyncStats, type SyncStats } from "./sync";
