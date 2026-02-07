@@ -1,10 +1,17 @@
 /**
  * Publication Utilities
  *
- * External API clients and DOI lookup services.
+ * External API clients, DOI lookup, and sync services.
  */
 
 export { lookupDoi, type DoiLookupResult } from "./doi-lookup";
-export { fetchFromOpenAlex } from "./openalex";
-export { fetchFromCrossref } from "./crossref";
-export { type PublicationMetadata, normalizeDoi } from "./shared";
+export { syncDoi, type DoiSyncResult } from "./doi-sync";
+export { fetchFromOpenAlex, fetchSyncFromOpenAlex } from "./openalex";
+export { fetchFromCrossref, fetchCitationsFromCrossref } from "./crossref";
+export {
+  type PublicationMetadata,
+  type SyncMetadata,
+  type AuthorInfo,
+  normalizeDoi,
+  SYNC_DELAY,
+} from "./shared";
