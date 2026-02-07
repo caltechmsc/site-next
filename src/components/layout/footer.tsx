@@ -97,17 +97,33 @@ export function Footer() {
           <p>
             © {currentYear} {siteConfig.fullName}. All rights reserved.
           </p>
-          <p>
-            Part of{" "}
-            <a
-              href={siteConfig.links.caltech}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 transition-colors hover:text-primary"
-            >
-              Caltech
-            </a>
-          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:justify-end">
+            <p>
+              Built by{" "}
+              <a
+                href="https://github.com/TKanX"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 transition-colors hover:text-primary"
+              >
+                Tony Kan
+              </a>
+            </p>
+            <span aria-hidden="true" className="hidden sm:inline">
+              ·
+            </span>
+            <p>
+              Part of{" "}
+              <a
+                href={siteConfig.links.caltech}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 transition-colors hover:text-primary"
+              >
+                Caltech
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
