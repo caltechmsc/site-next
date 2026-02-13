@@ -38,6 +38,7 @@ export function PhotoCollage() {
       left: "46%",
       top: "-2%",
       z: 1,
+      priority: true,
     },
     {
       src: "/images/wag/red-beret-closeup.png",
@@ -92,6 +93,7 @@ export function PhotoCollage() {
                   fill
                   className="object-cover"
                   sizes="(max-width: 640px) 45vw, 28vw"
+                  priority={photo.priority}
                 />
               </div>
             </div>
