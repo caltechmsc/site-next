@@ -23,6 +23,7 @@ export function PhotoCollage() {
       src: "/images/wag/red-beret-suit-portrait.jpg",
       alt: "Prof. Goddard — formal portrait with signature red beret",
       width: "30%",
+      sizes: "(max-width: 640px) 30vw, 14vw",
       aspect: "214 / 320",
       rotate: -5,
       left: "0%",
@@ -33,6 +34,7 @@ export function PhotoCollage() {
       src: "/images/wag/blue-beret-coconut-restaurant.jpg",
       alt: "Prof. Goddard enjoying a coconut at a restaurant",
       width: "50%",
+      sizes: "(max-width: 640px) 50vw, 23vw",
       aspect: "4 / 3",
       rotate: 3,
       left: "46%",
@@ -44,6 +46,7 @@ export function PhotoCollage() {
       src: "/images/wag/red-beret-closeup.png",
       alt: "Prof. Goddard — a warm smile",
       width: "34%",
+      sizes: "(max-width: 640px) 34vw, 15vw",
       aspect: "2268 / 3313",
       rotate: -1.5,
       left: "22%",
@@ -92,7 +95,7 @@ export function PhotoCollage() {
                   alt={photo.alt}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 640px) 45vw, 28vw"
+                  sizes={photo.sizes}
                   priority={photo.priority}
                 />
               </div>
