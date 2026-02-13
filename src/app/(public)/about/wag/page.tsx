@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { prisma } from "@/lib/db/client";
 import { formatCompactNumber } from "@/lib/format";
+import { PhotoCollage } from "./_components";
 
 // ============================================================================
 // Metadata
@@ -67,22 +68,14 @@ export default async function WagPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
       {/* Profile Header */}
-      <section className="flex flex-col gap-6 sm:flex-row sm:gap-8">
-        {/* Portrait */}
-        <div className="flex-shrink-0">
-          <div className="relative mx-auto h-48 w-48 overflow-hidden rounded-xl border bg-muted shadow-sm sm:mx-0 sm:h-56 sm:w-56">
-            <Image
-              src="/images/wag/portrait.png"
-              alt="William A. Goddard III"
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
+      <section className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+        {/* Photo Collage */}
+        <div className="mx-auto w-full max-w-sm lg:mx-0 lg:w-[45%] lg:max-w-none lg:flex-shrink-0">
+          <PhotoCollage />
         </div>
 
         {/* Info */}
-        <div className="flex-1 text-center sm:text-left">
+        <div className="flex-1 text-center lg:text-left">
           <h1 className="text-2xl font-bold sm:text-3xl">
             William A. Goddard III
           </h1>
@@ -104,7 +97,7 @@ export default async function WagPage() {
           </p>
 
           {/* Stats */}
-          <div className="mt-4 flex flex-wrap justify-center gap-4 sm:justify-start">
+          <div className="mt-4 flex flex-wrap justify-center gap-4 lg:justify-start">
             <div className="text-center">
               <p className="text-2xl font-bold tabular-nums">
                 {formatCompactNumber(stats.publications)}
@@ -126,7 +119,7 @@ export default async function WagPage() {
           </div>
 
           {/* Actions */}
-          <div className="mt-6 flex flex-wrap justify-center gap-3 sm:justify-start">
+          <div className="mt-6 flex flex-wrap justify-center gap-3 lg:justify-start">
             <Button asChild>
               <a href="/files/wag/wag-cv.pdf" download>
                 <Download className="mr-2 h-4 w-4" />
