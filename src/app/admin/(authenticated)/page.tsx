@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { getDashboardStats } from "@/lib/admin/actions";
 import { PublicationChart, RecentActivity, StatsGrid } from "./_components";
 
@@ -5,8 +7,8 @@ import { PublicationChart, RecentActivity, StatsGrid } from "./_components";
 // Metadata
 // ============================================================================
 
-export const metadata = {
-  title: "Dashboard | Admin",
+export const metadata: Metadata = {
+  title: "Dashboard",
   description: "Overview of your site content and activity",
 };
 

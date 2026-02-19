@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/admin/layout";
 import { AdminListSkeleton } from "@/components/admin/shared";
@@ -10,8 +11,8 @@ import { AdminList, AccountView } from "./_components";
 // Metadata
 // ============================================================================
 
-export const metadata = {
-  title: "Administrators | Admin",
+export const metadata: Metadata = {
+  title: "Administrators",
   description: "Manage administrator accounts and roles",
 };
 

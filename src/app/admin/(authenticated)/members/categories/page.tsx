@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/admin/layout";
 import { ListSkeleton } from "@/components/admin/shared";
@@ -9,8 +10,8 @@ import { CategoryList } from "./_components";
 // Metadata
 // ============================================================================
 
-export const metadata = {
-  title: "Member Categories | Admin",
+export const metadata: Metadata = {
+  title: "Member Categories",
   description: "Manage member categories and display order",
 };
 

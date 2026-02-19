@@ -77,19 +77,3 @@ export const mainNav: NavItem[] = [
     ],
   },
 ] as const;
-
-// ============================================================================
-// SEO Defaults
-// ============================================================================
-
-export const seoDefaults = {
-  defaultTitle: `${siteConfig.name} - ${siteConfig.fullName}`,
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    siteName: siteConfig.name,
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
-} as const;

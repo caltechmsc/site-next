@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/admin/layout";
 import { CollaboratorListSkeleton } from "@/components/admin/shared";
@@ -9,8 +10,8 @@ import { CollaboratorList } from "./_components";
 // Metadata
 // ============================================================================
 
-export const metadata = {
-  title: "Collaborators | Admin",
+export const metadata: Metadata = {
+  title: "Collaborators",
   description: "Manage collaborators and their locations",
 };
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Camera, Calendar as CalendarIcon } from "lucide-react";
 
 import { getPhotosGroupedByYear, getPhotoStats } from "@/lib/db/queries/photos";
-import { createPageMetadata } from "@/lib/metadata";
+import { createPageMetadata, pageDescriptions } from "@/lib/metadata";
 import { PhotoGallery } from "@/components/events";
 
 // ============================================================================
@@ -11,8 +11,7 @@ import { PhotoGallery } from "@/components/events";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Group Photos",
-  description:
-    "Photo gallery of the Materials and Process Simulation Center team through the years.",
+  description: pageDescriptions.photos,
   path: "/events/photos",
 });
 

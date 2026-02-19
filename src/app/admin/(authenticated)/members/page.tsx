@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Settings } from "lucide-react";
 
 import { PageHeader } from "@/components/admin/layout";
@@ -12,8 +13,8 @@ import { MemberList } from "./_components";
 // Metadata
 // ============================================================================
 
-export const metadata = {
-  title: "Members | Admin",
+export const metadata: Metadata = {
+  title: "Members",
   description: "Manage team members and their profiles",
 };
 

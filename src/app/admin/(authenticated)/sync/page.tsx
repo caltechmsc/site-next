@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { getSyncStats } from "@/lib/admin/actions";
 import { PageHeader } from "@/components/admin/layout";
 import { SyncDashboard } from "./_components";
@@ -6,8 +8,8 @@ import { SyncDashboard } from "./_components";
 // Metadata
 // ============================================================================
 
-export const metadata = {
-  title: "Data Sync | Admin",
+export const metadata: Metadata = {
+  title: "Data Sync",
   description: "Sync publication metadata and rebuild data relationships",
 };
 
