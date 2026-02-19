@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/admin/layout";
 import { ResearchTreeSkeleton } from "@/components/admin/shared";
@@ -9,8 +10,8 @@ import { ResearchList } from "./_components";
 // Metadata
 // ============================================================================
 
-export const metadata = {
-  title: "Research Areas | Admin",
+export const metadata: Metadata = {
+  title: "Research Areas",
   description: "Manage research areas and their hierarchy",
 };
 

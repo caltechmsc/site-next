@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/admin/layout";
 import { PhotoGridSkeleton } from "@/components/admin/shared";
@@ -9,8 +10,8 @@ import { PhotoList } from "./_components";
 // Metadata
 // ============================================================================
 
-export const metadata = {
-  title: "Group Photos | Admin",
+export const metadata: Metadata = {
+  title: "Group Photos",
   description: "Manage group photos and display order",
 };
 

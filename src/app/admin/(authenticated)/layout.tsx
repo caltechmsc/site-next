@@ -1,7 +1,21 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 
 import { getCurrentUser } from "@/lib/auth";
+import { siteConfig } from "@/config/site";
 import { Sidebar, TopBar, AuthKeepAlive } from "@/components/admin/layout";
+
+// ============================================================================
+// Metadata
+// ============================================================================
+
+export const metadata: Metadata = {
+  title: {
+    template: `%s | Admin | ${siteConfig.name}`,
+    default: `Admin | ${siteConfig.name}`,
+  },
+  robots: "noindex,nofollow",
+};
 
 // ============================================================================
 // Route Config

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/admin/layout";
 import { PublicationListSkeleton } from "@/components/admin/shared";
@@ -13,8 +14,8 @@ import { PublicationList } from "./_components";
 // Metadata
 // ============================================================================
 
-export const metadata = {
-  title: "Publications | Admin",
+export const metadata: Metadata = {
+  title: "Publications",
   description: "Manage research publications",
 };
 
