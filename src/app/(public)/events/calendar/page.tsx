@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Calendar, ExternalLink } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
-import { createPageMetadata } from "@/lib/metadata";
+import { createPageMetadata, pageDescriptions } from "@/lib/metadata";
 import { Button } from "@/components/ui/button";
 
 // ============================================================================
@@ -11,8 +11,7 @@ import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Events Calendar",
-  description:
-    "Upcoming events, seminars, and meetings at the Materials and Process Simulation Center.",
+  description: pageDescriptions.calendar,
   path: "/events/calendar",
 });
 

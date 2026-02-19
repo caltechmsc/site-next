@@ -5,7 +5,7 @@
  */
 
 import type { Metadata } from "next";
-import { siteConfig, seoDefaults } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { truncateAtWordBoundary } from "@/lib/format";
 import { getYear } from "@/lib/date";
 
@@ -24,43 +24,33 @@ interface PageMetadataOptions {
 /**
  * Generate metadata for a page.
  */
-export function createPageMetadata(
-  options: PageMetadataOptions = {}
-): Metadata {
-  const {
-    title,
-    description = siteConfig.description,
-    path = "",
-    image = siteConfig.images.ogImage,
-    noIndex = false,
-  } = options;
+export function createPageMetadata({
+  title,
+  description,
+  path,
+  image,
+  noIndex = false,
+}: PageMetadataOptions = {}): Metadata {
+  const ogTitle = title ? `${title} | ${siteConfig.name}` : undefined;
 
-  const fullTitle = title
-    ? `${title} | ${siteConfig.name}`
-    : seoDefaults.defaultTitle;
-
-  const url = `${siteConfig.url}${path}`;
+  const url = path !== undefined ? `${siteConfig.url}${path}` : undefined;
 
   return {
-    title: fullTitle,
-    description,
+    ...(title && { title }),
+    ...(description && { description }),
     ...(noIndex && { robots: "noindex,nofollow" }),
     openGraph: {
-      ...seoDefaults.openGraph,
-      title: fullTitle,
-      description,
-      url,
-      images: image ? [{ url: image }] : undefined,
+      ...(ogTitle && { title: ogTitle }),
+      ...(description && { description }),
+      ...(url && { url }),
+      ...(image && { images: [{ url: image }] }),
     },
     twitter: {
-      ...seoDefaults.twitter,
-      title: fullTitle,
-      description,
-      images: image ? [image] : undefined,
+      ...(ogTitle && { title: ogTitle }),
+      ...(description && { description }),
+      ...(image && { images: [image] }),
     },
-    alternates: {
-      canonical: url,
-    },
+    ...(url && { alternates: { canonical: url } }),
   };
 }
 
@@ -74,16 +64,15 @@ export function createMemberMetadata(member: {
   bio?: string | null;
   photo?: string | null;
 }): Metadata {
-  const title = member.name;
   const description = member.bio
     ? truncateAtWordBoundary(member.bio, 160)
     : `${member.name}${member.position ? ` - ${member.position}` : ""} at ${siteConfig.fullName}, Caltech.`;
 
   return createPageMetadata({
-    title,
+    title: member.name,
     description,
     path: `/members/${member.id}`,
-    image: member.photo || siteConfig.images.ogImage,
+    ...(member.photo && { image: member.photo }),
   });
 }
 
@@ -155,6 +144,8 @@ export const pageDescriptions = {
   research: `Explore research areas at ${siteConfig.fullName}, Caltech.`,
   collaborators: `Global research partners and collaborators of ${siteConfig.fullName}.`,
   events: `Events, group photos, and calendar for ${siteConfig.fullName}.`,
+  photos: `Photo gallery of ${siteConfig.fullName} team through the years.`,
+  calendar: `Upcoming events, seminars, and meetings at ${siteConfig.fullName}.`,
   wag: `Prof. William A. Goddard III, Director of ${siteConfig.fullName} at Caltech.`,
   msc: `About ${siteConfig.fullName} at the California Institute of Technology.`,
 } as const;
