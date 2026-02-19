@@ -32,24 +32,33 @@ export function createPageMetadata({
   noIndex = false,
 }: PageMetadataOptions = {}): Metadata {
   const ogTitle = title ? `${title} | ${siteConfig.name}` : undefined;
-
   const url = path !== undefined ? `${siteConfig.url}${path}` : undefined;
+  const hasContent = !!(ogTitle || description);
+  const resolvedImage = image ?? siteConfig.images.ogImage;
 
   return {
     ...(title && { title }),
     ...(description && { description }),
     ...(noIndex && { robots: "noindex,nofollow" }),
-    openGraph: {
-      ...(ogTitle && { title: ogTitle }),
-      ...(description && { description }),
-      ...(url && { url }),
-      ...(image && { images: [{ url: image }] }),
-    },
-    twitter: {
-      ...(ogTitle && { title: ogTitle }),
-      ...(description && { description }),
-      ...(image && { images: [image] }),
-    },
+    ...(hasContent && {
+      openGraph: {
+        type: "website",
+        locale: "en_US",
+        siteName: siteConfig.name,
+        ...(ogTitle && { title: ogTitle }),
+        ...(description && { description }),
+        ...(url && { url }),
+        images: [{ url: resolvedImage }],
+      },
+    }),
+    ...(hasContent && {
+      twitter: {
+        card: "summary_large_image",
+        ...(ogTitle && { title: ogTitle }),
+        ...(description && { description }),
+        images: [resolvedImage],
+      },
+    }),
     ...(url && { alternates: { canonical: url } }),
   };
 }
